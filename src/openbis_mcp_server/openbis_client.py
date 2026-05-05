@@ -8,6 +8,7 @@ logs in on first use. Higher-level logic (search, create, upload, ...) lives in
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from threading import Lock
 from typing import Any
 
@@ -29,6 +30,15 @@ class OpenbisClient:
     ) -> None:
         self._url = url or os.environ.get("OPENBIS_URL")
         self._token = token or os.environ.get("OPENBIS_TOKEN")
+        # Support reading the token from a file (matches the pyBIS convention
+        # of storing tokens under ~/.pybis/<host>.token). Used only if
+        # OPENBIS_TOKEN is empty.
+        if not self._token:
+            token_file = os.environ.get("OPENBIS_TOKEN_FILE")
+            if token_file:
+                p = Path(token_file).expanduser()
+                if p.is_file():
+                    self._token = p.read_text().strip() or None
         self._username = username or os.environ.get("OPENBIS_USERNAME")
         self._password = password or os.environ.get("OPENBIS_PASSWORD")
 
@@ -48,7 +58,8 @@ class OpenbisClient:
             )
         if not self._token and not (self._username and self._password):
             raise OpenbisConfigError(
-                "No credentials found. Set OPENBIS_TOKEN, or both "
+                "No credentials found. Set OPENBIS_TOKEN (or OPENBIS_TOKEN_FILE "
+                "pointing at a file containing the token), or both "
                 "OPENBIS_USERNAME and OPENBIS_PASSWORD."
             )
 

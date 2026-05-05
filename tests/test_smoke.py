@@ -38,3 +38,32 @@ def test_server_module_imports() -> None:
     import openbis_mcp_server.server as server  # noqa: F401
 
     assert server.mcp is not None
+
+
+def test_token_file_env(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """OPENBIS_TOKEN_FILE should be read when OPENBIS_TOKEN is empty."""
+    token_path = tmp_path / "tok"
+    token_path.write_text("secret-token-from-file\n")
+    monkeypatch.setenv("OPENBIS_URL", "https://example.invalid")
+    monkeypatch.delenv("OPENBIS_TOKEN", raising=False)
+    monkeypatch.setenv("OPENBIS_TOKEN_FILE", str(token_path))
+    client = OpenbisClient()
+    assert client._token == "secret-token-from-file"  # noqa: SLF001
+
+
+def test_write_disabled_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Write tools must refuse to run when OPENBIS_MCP_ALLOW_WRITE is unset."""
+    monkeypatch.delenv("OPENBIS_MCP_ALLOW_WRITE", raising=False)
+    from openbis_mcp_server.server import _require_write, _write_enabled
+
+    assert _write_enabled() is False
+    with pytest.raises(RuntimeError, match="OPENBIS_MCP_ALLOW_WRITE"):
+        _require_write()
+
+
+def test_write_enabled_when_flag_set(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("OPENBIS_MCP_ALLOW_WRITE", "1")
+    from openbis_mcp_server.server import _require_write, _write_enabled
+
+    assert _write_enabled() is True
+    _require_write()  # must not raise
