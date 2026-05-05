@@ -44,9 +44,14 @@ verified the agent's behaviour on a non-production space.
 | write*  | `update_sample` | Update properties / add or remove parent–child links |
 | write*  | `update_dataset` | Update properties |
 | write*  | `delete_entity` | Delete by kind+identifier; non-empty `reason` required |
+| s3      | `get_s3_status` | S3 configuration status (bucket, region, DMS code) |
+| s3†     | `create_s3_linked_dataset` | Upload file to S3; register as LINK-kind dataset |
+| s3      | `generate_s3_download_url` | Fresh presigned S3 GET URL for a given object key |
 
 `*` write tools require `OPENBIS_MCP_ALLOW_WRITE=1`. See
 [Enabling write access](#enabling-write-access) below.
+
+`†` also requires `OPENBIS_MCP_ALLOW_WRITE=1`.
 
 ## Configuration
 
@@ -62,6 +67,55 @@ username + password.
 | `OPENBIS_USERNAME` + `OPENBIS_PASSWORD` | is required | Used only if neither token variable is set. |
 | `OPENBIS_VERIFY_CERTIFICATES` | no | Set to `false` for self-signed dev certs. Default `true`. |
 | `OPENBIS_MCP_ALLOW_WRITE` | no | Set to `1` to enable create/update/delete tools. Default off. |
+
+### S3 storage configuration
+
+S3 storage support enables storing dataset files in an S3-compatible object
+store while only keeping metadata (and a presigned download URL) in openBIS.
+This follows the approach of [pybis_aixtended](https://github.com/pyiron/pyiron_rdm/tree/main/pybis_aixtended)
+from pyiron/pyiron_rdm.
+
+Install the extra dependencies first:
+
+```bash
+pip install -e ".[s3]"
+```
+
+Then configure via environment variables **or** an INI config file:
+
+**Environment variables:**
+
+| Variable | Required? | Purpose |
+|----------|-----------|---------|
+| `S3_ACCESS_KEY` | yes | S3 access key ID |
+| `S3_ACCESS_SECRET` | yes | S3 secret access key |
+| `S3_BUCKET` | yes | Bucket name |
+| `S3_DMS_CODE` | yes | openBIS External Data Management System code (set up by admin) |
+| `S3_REGION` | no | AWS region (default: `eu-central-1`) |
+| `S3_ENDPOINT_URL` | no | Custom endpoint for non-AWS stores |
+| `S3_ENDPOINT_PORT` | no | Optional port suffix for the endpoint |
+| `S3_CONFIG_FILE` | no | Path to an INI config file (overrides individual env vars) |
+
+**INI config file** (same format as pybis_aixtended):
+
+```ini
+[s3]
+s3_region = eu-central-1
+s3_endpoint_url = https://s3.example.com
+s3_endpoint_port = 443
+s3_access_key = AKID...
+s3_access_secret = secret
+s3_bucket = my-bucket
+
+[openbis]
+dms_code = MY_DMS
+```
+
+Point to it with `S3_CONFIG_FILE=/path/to/s3_config.ini`.
+
+> **Note:** The S3 DMS must be registered in openBIS by an instance admin
+> before datasets can be linked.  `get_s3_status` shows whether the server
+> can see it; `create_s3_linked_dataset` requires `OPENBIS_MCP_ALLOW_WRITE=1`.
 
 A template lives in [`.env.example`](.env.example). Never commit a populated
 `.env` — `.gitignore` excludes it.
@@ -300,6 +354,7 @@ openbis-mcp-server/
     __main__.py        # entry point — `python -m openbis_mcp_server`
     server.py          # FastMCP server, all tool definitions
     openbis_client.py  # pyBIS connection wrapper, lazy login
+    s3_support.py      # S3 config, upload helpers, linked-dataset registration
   tests/
     test_smoke.py      # offline tests (no live openBIS needed)
   pyproject.toml
@@ -314,6 +369,7 @@ openbis-mcp-server/
 - [x] Schema introspection (sample/dataset/experiment types, vocabularies)
 - [x] Dataset file listing + single-file download
 - [x] Write operations behind explicit env-var gate
+- [x] S3-linked dataset support (upload to S3, register LINK-kind dataset, presigned URLs)
 - [ ] Higher-level workflows (e.g. `ingest_lammps_run(folder)` combining
   schema lookup, file consolidation, and upload)
 - [ ] Bulk operations (multi-sample / multi-dataset create in one call)
