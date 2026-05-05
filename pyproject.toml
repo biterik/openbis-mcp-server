@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openbis-mcp-server"
+version = "0.0.1"
+description = "Model Context Protocol server exposing openBIS (via pyBIS) to LLM agents."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Erik Bitzek", email = "erik.bitzek@googlemail.com" },
+]
+keywords = ["openbis", "pybis", "mcp", "model-context-protocol", "llm", "research-data-management"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "mcp>=1.2.0",
+    "pybis>=1.36.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+openbis-mcp-server = "openbis_mcp_server.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/biterik/openbis-mcp-server"
+Issues = "https://github.com/biterik/openbis-mcp-server/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openbis_mcp_server"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N", "RUF"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
