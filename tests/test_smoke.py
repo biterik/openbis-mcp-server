@@ -256,7 +256,7 @@ def test_make_s3_key_unique() -> None:
     from openbis_mcp_server.s3_support import _make_s3_key
 
     key1 = _make_s3_key("file.txt", "T", "u")
-    time.sleep(0.01)
+    time.sleep(0.001)
     key2 = _make_s3_key("file.txt", "T", "u")
     assert key1 != key2
 
@@ -287,5 +287,15 @@ def test_get_ob_username_no_token() -> None:
 
     class FakeOb:
         token = None
+
+    assert _get_ob_username(FakeOb()) == "unknown"
+
+
+def test_get_ob_username_malformed_token() -> None:
+    """_get_ob_username falls back to 'unknown' when the token has no UUID suffix."""
+    from openbis_mcp_server.s3_support import _get_ob_username
+
+    class FakeOb:
+        token = "some-opaque-non-uuid-token"
 
     assert _get_ob_username(FakeOb()) == "unknown"

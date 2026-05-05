@@ -217,8 +217,6 @@ def _get_ob_username(ob: Any) -> str:
         m = _TOKEN_UUID_RE.search(token)
         if m:
             return token[: m.start()]
-        # Fallback: take everything before the first hyphen
-        return token.split("-")[0]
     return "unknown"
 
 
