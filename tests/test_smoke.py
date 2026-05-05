@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pathlib
+
 import pytest
 
 from openbis_mcp_server.openbis_client import OpenbisClient, OpenbisConfigError
@@ -128,7 +130,7 @@ def test_s3_config_endpoint_url_with_port(monkeypatch: pytest.MonkeyPatch) -> No
     assert cfg.endpoint_url == "https://s3.example.com:9000"
 
 
-def test_s3_config_from_file(tmp_path: pytest.TempdirFactory, monkeypatch: pytest.MonkeyPatch) -> None:  # noqa: E501
+def test_s3_config_from_file(tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:  # noqa: E501
     """load_s3_config_from_file parses an INI config file correctly."""
     cfg_file = tmp_path / "s3.ini"
     cfg_file.write_text(
@@ -152,7 +154,7 @@ def test_s3_config_from_file(tmp_path: pytest.TempdirFactory, monkeypatch: pytes
     assert cfg.endpoint_url == "https://s3.custom.com"
 
 
-def test_s3_config_file_missing_dms_code(tmp_path: pytest.TempdirFactory) -> None:
+def test_s3_config_file_missing_dms_code(tmp_path: pathlib.Path) -> None:
     """A config file without dms_code raises S3ConfigError."""
     cfg_file = tmp_path / "bad.ini"
     cfg_file.write_text("[s3]\ns3_access_key = k\ns3_access_secret = s\ns3_bucket = b\n")
@@ -198,7 +200,7 @@ def test_s3_status_tool_configured(monkeypatch: pytest.MonkeyPatch) -> None:
     assert result["dms_code"] == "TEST_DMS"
 
 
-def test_s3_get_file_metadata(tmp_path: pytest.TempdirFactory) -> None:
+def test_s3_get_file_metadata(tmp_path: pathlib.Path) -> None:
     """get_file_metadata returns the expected structure for a real file."""
     test_file = tmp_path / "sample.dat"
     test_file.write_bytes(b"hello world")
