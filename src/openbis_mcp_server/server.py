@@ -134,7 +134,14 @@ def get_server_info() -> dict[str, Any]:
         if fn_or_val is None:
             continue
         try:
-            info["server_information"] = fn_or_val() if callable(fn_or_val) else fn_or_val
+            server_info = fn_or_val() if callable(fn_or_val) else fn_or_val
+            # ServerInformation object isn't JSON serializable; extract its _info dict
+            if hasattr(server_info, "_info"):
+                info["server_information"] = server_info._info
+            elif hasattr(server_info, "__dict__"):
+                info["server_information"] = server_info.__dict__
+            else:
+                info["server_information"] = str(server_info)
             break
         except Exception:  # noqa: BLE001
             continue
