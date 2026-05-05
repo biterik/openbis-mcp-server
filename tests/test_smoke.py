@@ -216,3 +216,76 @@ def test_s3_get_file_metadata(tmp_path: pathlib.Path) -> None:
     assert entry["directory"] is False
     assert entry["path"] == "https://s3.example.com/sample.dat"
     assert "checksum" in entry
+
+
+# ---------------------------------------------------------------------------
+# S3 key naming tests
+# ---------------------------------------------------------------------------
+
+
+def test_make_s3_key_format() -> None:
+    """_make_s3_key produces a key with the expected prefix pattern."""
+    import re
+
+    from openbis_mcp_server.s3_support import _make_s3_key
+
+    key = _make_s3_key("/some/path/myfile.txt", "RAW_DATA", "alice")
+    # Expected format: {timestamp}_RAW_DATA_alice_myfile.txt
+    # Timestamp pattern: YYYY-MM-DDTHH-MM-SS.ffffff
+    pattern = re.compile(
+        r"^(?P<ts>\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.\d+)_"
+        r"(?P<dtype>.+)_(?P<user>.+)_(?P<base>[^_]+)$"
+    )
+    m = pattern.match(key)
+    assert m is not None, f"Key {key!r} does not match expected pattern"
+    assert key.endswith("_RAW_DATA_alice_myfile.txt")
+
+
+def test_make_s3_key_uses_basename() -> None:
+    """_make_s3_key strips directory components from the filename."""
+    from openbis_mcp_server.s3_support import _make_s3_key
+
+    key = _make_s3_key("/deep/nested/dir/data.csv", "DS", "bob")
+    assert key.endswith("_data.csv")
+
+
+def test_make_s3_key_unique() -> None:
+    """Two calls to _make_s3_key produce different keys even for the same input."""
+    import time
+
+    from openbis_mcp_server.s3_support import _make_s3_key
+
+    key1 = _make_s3_key("file.txt", "T", "u")
+    time.sleep(0.01)
+    key2 = _make_s3_key("file.txt", "T", "u")
+    assert key1 != key2
+
+
+def test_get_ob_username_standard_token() -> None:
+    """_get_ob_username parses a standard pybis token correctly."""
+    from openbis_mcp_server.s3_support import _get_ob_username
+
+    class FakeOb:
+        token = "alice-550e8400-e29b-41d4-a716-446655440000"
+
+    assert _get_ob_username(FakeOb()) == "alice"
+
+
+def test_get_ob_username_hyphenated() -> None:
+    """_get_ob_username handles usernames that contain hyphens."""
+    from openbis_mcp_server.s3_support import _get_ob_username
+
+    class FakeOb:
+        token = "first-last-550e8400-e29b-41d4-a716-446655440000"
+
+    assert _get_ob_username(FakeOb()) == "first-last"
+
+
+def test_get_ob_username_no_token() -> None:
+    """_get_ob_username falls back to 'unknown' when no token is present."""
+    from openbis_mcp_server.s3_support import _get_ob_username
+
+    class FakeOb:
+        token = None
+
+    assert _get_ob_username(FakeOb()) == "unknown"
