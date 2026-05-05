@@ -34,6 +34,10 @@ dev = [
     "ruff>=0.5",
     "mypy>=1.10",
 ]
+s3 = [
+    "boto3>=1.35",
+    "xxhash>=3.0",
+]
 
 [project.scripts]
 openbis-mcp-server = "openbis_mcp_server.__main__:main"

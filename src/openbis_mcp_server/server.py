@@ -25,6 +25,12 @@ from mcp.server.fastmcp import FastMCP
 
 from . import __version__
 from .openbis_client import OpenbisClient, OpenbisConfigError
+from .s3_support import (
+    S3ConfigError,
+    generate_presigned_url,
+    get_s3_config,
+    upload_and_register_s3_linked_dataset,
+)
 
 mcp = FastMCP("openbis-mcp-server")
 
@@ -560,3 +566,122 @@ def delete_entity(kind: str, identifier: str, reason: str) -> dict[str, Any]:
     e = fetch(identifier)
     e.delete(reason)
     return {"deleted": identifier, "kind": kind, "reason": reason}
+
+
+# ---------------- S3 storage (gated by S3_* env vars + OPENBIS_MCP_ALLOW_WRITE=1) ----------------
+
+
+def _get_s3_config_or_raise():
+    """Return the active S3Config or raise a descriptive RuntimeError."""
+    try:
+        cfg = get_s3_config()
+    except S3ConfigError as exc:
+        raise RuntimeError(f"S3 configuration error: {exc}") from exc
+    if cfg is None:
+        raise RuntimeError(
+            "S3 storage is not configured. Set S3_ACCESS_KEY, S3_ACCESS_SECRET, "
+            "S3_BUCKET, and S3_DMS_CODE (plus optionally S3_ENDPOINT_URL, "
+            "S3_REGION, S3_ENDPOINT_PORT), or point S3_CONFIG_FILE at a config file."
+        )
+    return cfg
+
+
+@mcp.tool()
+def get_s3_status() -> dict[str, Any]:
+    """Return the current S3 storage configuration status.
+
+    Reports whether S3 is configured and (if so) which bucket and DMS code are
+    in use.  Does NOT test the S3 connection or require openBIS credentials.
+    """
+    try:
+        cfg = get_s3_config()
+    except S3ConfigError as exc:
+        return {"configured": False, "error": str(exc)}
+    if cfg is None:
+        return {
+            "configured": False,
+            "hint": (
+                "Set S3_ACCESS_KEY, S3_ACCESS_SECRET, S3_BUCKET, and S3_DMS_CODE "
+                "environment variables (or S3_CONFIG_FILE) to enable S3 storage."
+            ),
+        }
+    return {
+        "configured": True,
+        "bucket": cfg.bucket,
+        "region": cfg.region,
+        "endpoint_url": cfg.endpoint_url,
+        "dms_code": cfg.dms_code,
+    }
+
+
+@mcp.tool()
+def create_s3_linked_dataset(
+    type: str,
+    file: str,
+    sample: str | None = None,
+    experiment: str | None = None,
+    properties: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Upload a local file to S3 and register it as a LINK-kind dataset in openBIS.
+
+    The file's actual bytes are stored in the S3 bucket configured via the
+    ``S3_*`` environment variables (or ``S3_CONFIG_FILE``).  openBIS records
+    only the metadata and a presigned download URL (stored in the dataset
+    property ``s3_download_link``).
+
+    Requires OPENBIS_MCP_ALLOW_WRITE=1 **and** S3 to be configured.
+
+    type: dataset type code (must exist in openBIS)
+    file: absolute local path to the file to upload
+    sample or experiment: identifier of the entity to attach the dataset to
+    properties: optional dict of dataset property values
+    """
+    _require_write()
+    cfg = _get_s3_config_or_raise()
+
+    if not (sample or experiment):
+        raise ValueError("Either 'sample' or 'experiment' must be provided.")
+    from pathlib import Path
+
+    if not Path(file).expanduser().is_file():
+        raise ValueError(f"File not found: {file}")
+
+    ob = _get_client().connect()
+    return upload_and_register_s3_linked_dataset(
+        ob=ob,
+        filename=str(Path(file).expanduser()),
+        s3_config=cfg,
+        dataset_type=type,
+        sample=sample,
+        experiment=experiment,
+        properties=properties,
+    )
+
+
+@mcp.tool()
+def generate_s3_download_url(
+    s3_key: str,
+    validity: int = 604800,
+) -> dict[str, Any]:
+    """Generate a fresh presigned S3 GET URL for a file in the configured bucket.
+
+    Useful when the ``s3_download_link`` stored on an existing dataset has expired.
+    The URL is valid for *validity* seconds (default 7 days).
+
+    s3_key: the object key inside the bucket (typically the bare filename)
+    validity: URL lifetime in seconds (max depends on your S3 provider)
+    """
+    cfg = _get_s3_config_or_raise()
+    try:
+        from .s3_support import build_s3_client
+    except ImportError as exc:
+        raise RuntimeError(str(exc)) from exc
+
+    s3_client = build_s3_client(cfg)
+    url = generate_presigned_url(s3_client, cfg.bucket, s3_key, validity)
+    return {
+        "bucket": cfg.bucket,
+        "s3_key": s3_key,
+        "validity_seconds": validity,
+        "download_url": url,
+    }
