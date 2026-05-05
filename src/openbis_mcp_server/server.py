@@ -675,7 +675,7 @@ def generate_s3_download_url(
     Useful when the ``s3_download_link`` stored on an existing dataset has expired.
     The URL is valid for *validity* seconds (default 7 days).
 
-    s3_key: the object key inside the bucket (typically the bare filename)
+    s3_key: the object key inside the bucket (as returned by ``create_s3_linked_dataset``)
     validity: URL lifetime in seconds (max depends on your S3 provider)
     """
     cfg = _get_s3_config_or_raise()

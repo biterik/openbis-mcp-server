@@ -35,9 +35,11 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import zlib
 from configparser import ConfigParser
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any
 
 
@@ -192,6 +194,48 @@ def build_s3_client(config: S3Config) -> Any:  # type: ignore[return]
 
 
 # ---------------------------------------------------------------------------
+# S3 key generation
+# ---------------------------------------------------------------------------
+
+# pybis session tokens are formatted as ``username-<session-uuid>`` where the
+# session UUID matches the standard 8-4-4-4-12 hex pattern.
+_TOKEN_UUID_RE = re.compile(
+    r"-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    re.IGNORECASE,
+)
+
+
+def _get_ob_username(ob: Any) -> str:
+    """Extract the username from a logged-in pybis ``Openbis`` instance.
+
+    The pybis session token is formatted as ``username-<uuid>``.  This
+    function strips the trailing UUID to recover the username.  Falls back to
+    ``"unknown"`` if the token is absent or does not match the expected format.
+    """
+    token = getattr(ob, "token", None)
+    if token:
+        m = _TOKEN_UUID_RE.search(token)
+        if m:
+            return token[: m.start()]
+    return "unknown"
+
+
+def _make_s3_key(filename: str, dataset_type: str, username: str) -> str:
+    """Return a collision-resistant S3 object key for *filename*.
+
+    Follows the same naming convention as *pybis_aixtended*::
+
+        {timestamp}_{dataset_type}_{username}_{basename}
+
+    where *timestamp* is the current UTC time formatted as
+    ``%Y-%m-%dT%H-%M-%S.%f``.
+    """
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%S.%f")
+    basename = os.path.basename(filename)
+    return f"{timestamp}_{dataset_type}_{username}_{basename}"
+
+
+# ---------------------------------------------------------------------------
 # File helpers
 # ---------------------------------------------------------------------------
 
@@ -262,13 +306,17 @@ def get_file_metadata(filename: str, dms_path: str, compute_crc32: bool = False)
 # ---------------------------------------------------------------------------
 
 
-def get_dms_info(ob: Any, filename: str, dms_code: str) -> tuple[str, dict]:
+def get_dms_info(ob: Any, filename: str, dms_code: str, key: str | None = None) -> tuple[str, dict]:
     """Return the full DMS path and DMS ID dict for *filename*.
 
     Args:
         ob: A logged-in ``pybis.Openbis`` instance.
-        filename: The bare filename (no directory components).
+        filename: The local file path (used only when *key* is ``None``).
         dms_code: openBIS External Data Management System code.
+        key: The S3 object key to embed in the DMS path.  When omitted the
+            bare basename of *filename* is used.  Pass the value returned by
+            :func:`_make_s3_key` to use the collision-resistant naming
+            convention.
 
     Returns:
         A ``(dms_path, dms_id)`` tuple as required by the linked-dataset API.
@@ -276,7 +324,8 @@ def get_dms_info(ob: Any, filename: str, dms_code: str) -> tuple[str, dict]:
     dms = ob.get_external_data_management_system(dms_code)
     logging.debug("DMS URL template: %s", dms.urlTemplate)
     dms_id = ob.external_data_managment_system_to_dms_id(dms_code)
-    dms_path = dms.urlTemplate + "/" + os.path.basename(filename)
+    object_name = key if key is not None else os.path.basename(filename)
+    dms_path = dms.urlTemplate + "/" + object_name
     return dms_path, dms_id
 
 
@@ -293,18 +342,29 @@ def _get_datastore_url(ob: Any, dss_code: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def upload_file_to_s3(s3_client: Any, filename: str, bucket: str) -> None:
+def upload_file_to_s3(s3_client: Any, filename: str, bucket: str, key: str | None = None) -> str:
     """Upload *filename* to *bucket* using *s3_client*.
 
-    The object key is the bare basename of the file.
+    Args:
+        s3_client: A boto3 S3 client.
+        filename: Local path to the file.
+        bucket: Destination bucket name.
+        key: S3 object key.  When omitted the bare basename of *filename* is
+            used.  Pass the value returned by :func:`_make_s3_key` to store
+            the file under a collision-resistant name.
+
+    Returns:
+        The object key that was used for the upload.
     """
-    key = os.path.basename(filename)
+    if key is None:
+        key = os.path.basename(filename)
     try:
         s3_client.upload_file(Filename=filename, Bucket=bucket, Key=key)
         logging.info("Uploaded %s to s3://%s/%s", filename, bucket, key)
     except Exception as exc:
         logging.error("S3 upload failed: %s", exc)
         raise
+    return key
 
 
 def generate_presigned_url(s3_client: Any, bucket: str, key: str, validity: int = 604800) -> str:
@@ -431,17 +491,21 @@ def upload_and_register_s3_linked_dataset(
     props = properties or {}
     s3_client = build_s3_client(s3_config)
 
-    # Upload to S3
-    upload_file_to_s3(s3_client, filename, s3_config.bucket)
-    s3_key = os.path.basename(filename)
+    # Build a collision-resistant S3 key using the pybis_aixtended convention:
+    # {timestamp}_{dataset_type}_{username}_{original_filename}
+    username = _get_ob_username(ob)
+    s3_key = _make_s3_key(filename, dataset_type, username)
+
+    # Upload to S3 under the generated key
+    upload_file_to_s3(s3_client, filename, s3_config.bucket, key=s3_key)
 
     # Generate a presigned download URL and store it as a dataset property
     presigned_url = generate_presigned_url(s3_client, s3_config.bucket, s3_key)
     props = dict(props)
     props["s3_download_link"] = presigned_url
 
-    # Get DMS path and ID
-    dms_path, dms_id = get_dms_info(ob, filename, s3_config.dms_code)
+    # Get DMS path and ID using the same key so openBIS points at the right object
+    dms_path, dms_id = get_dms_info(ob, filename, s3_config.dms_code, key=s3_key)
 
     # Compute file metadata (checksum etc.)
     file_meta = get_file_metadata(filename, dms_path, compute_crc32=False)
