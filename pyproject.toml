@@ -8,13 +8,16 @@ version = "0.0.1"
 description = "Model Context Protocol server exposing openBIS (via pyBIS) to LLM agents."
 readme = "README.md"
 requires-python = ">=3.10"
+license = { file = "LICENSE" }
 authors = [
-    { name = "Erik Bitzek", email = "erik.bitzek@googlemail.com" },
+    { name = "Erik Bitzek", email = "e.bitzek@mpi-susmat.de" },
+    { name = "Niklas Siemer" },
 ]
 keywords = ["openbis", "pybis", "mcp", "model-context-protocol", "llm", "research-data-management"]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",

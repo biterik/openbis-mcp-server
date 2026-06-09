@@ -1,0 +1,42 @@
+# Funding / acknowledgement (CFF 1.2.0 has no dedicated funding field, so it is
+# recorded here as a comment and in the README):
+#
+#   Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research
+#   Foundation) under the National Research Data Infrastructure -
+#   NFDI 38/1 - project number 460247524 (NFDI-MatWerk consortium) and through
+#   the Collaborative Research Center (CRC) 1394 "Structural and Chemical Atomic
+#   Complexity - from defect phase diagrams to material properties" -
+#   project ID 409476157.
+
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+title: openbis-mcp-server
+abstract: >-
+  A Model Context Protocol (MCP) server that exposes openBIS functionality
+  (via pyBIS) to LLM-based agents, enabling assisted research-data management
+  workflows.
+type: software
+authors:
+  - family-names: Bitzek
+    given-names: Erik
+    email: e.bitzek@mpi-susmat.de
+    affiliation: "Max-Planck-Institut für Nachhaltige Materialien (MPI-SusMat)"
+    orcid: "https://orcid.org/0000-0001-7430-3694"
+  - family-names: Siemer
+    given-names: Niklas
+    # email: ""          # TODO: add Niklas's email
+    # affiliation: ""    # TODO: add Niklas's affiliation
+    # orcid: ""          # TODO: add Niklas's ORCID
+license: MPL-2.0
+repository-code: "https://github.com/biterik/openbis-mcp-server"
+url: "https://github.com/biterik/openbis-mcp-server"
+version: 0.0.1
+date-released: "2026-06-09"
+# doi: "10.xxxx/xxxxx"          # TODO: add if you mint a Zenodo/DataCite DOI
+keywords:
+  - openbis
+  - pybis
+  - mcp
+  - model-context-protocol
+  - llm
+  - research-data-management

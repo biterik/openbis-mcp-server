@@ -3,10 +3,53 @@
 from __future__ import annotations
 
 import pathlib
+import sys
+import types
 
 import pytest
 
-from openbis_mcp_server.openbis_client import OpenbisClient, OpenbisConfigError
+from openbis_mcp_server.openbis_client import (
+    ConnectionManager,
+    OpenbisAuthError,
+    OpenbisClient,
+    OpenbisConfigError,
+    discover_instances,
+    pat_setup_instructions,
+    resolve_default,
+)
+
+
+class _FakeOpenbis:
+    """Minimal stand-in for pybis.Openbis used to drive connect() in tests.
+
+    Token validity is decided per token string: any token in ``invalid_tokens``
+    is reported as an expired/inactive session.
+    """
+
+    def __init__(self, url: str, invalid_tokens: set[str]) -> None:
+        self.url = url
+        self._token: str | None = None
+        self._invalid = invalid_tokens
+
+    def set_token(self, token: str) -> None:
+        self._token = token
+
+    def is_session_active(self) -> bool:
+        return self._token not in self._invalid
+
+
+def _install_fake_pybis(
+    monkeypatch: pytest.MonkeyPatch, *, invalid_tokens: tuple[str, ...] = ()
+) -> None:
+    """Make ``from pybis import Openbis`` yield a fake driven by token validity."""
+    invalid = set(invalid_tokens)
+
+    def factory(url: str, verify_certificates: bool = True) -> _FakeOpenbis:
+        return _FakeOpenbis(url, invalid)
+
+    fake_module = types.ModuleType("pybis")
+    fake_module.Openbis = factory  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "pybis", fake_module)
 
 
 def test_missing_url_raises(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -299,3 +342,128 @@ def test_get_ob_username_malformed_token() -> None:
         token = "some-opaque-non-uuid-token"
 
     assert _get_ob_username(FakeOb()) == "unknown"
+
+
+# ---------------------------------------------------------------------------
+# Token validation + multi-instance support
+# ---------------------------------------------------------------------------
+
+
+def test_expired_token_raises_auth_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("OPENBIS_URL", "https://example.invalid")
+    monkeypatch.setenv("OPENBIS_TOKEN", "stale-token")
+    _install_fake_pybis(monkeypatch, invalid_tokens=("stale-token",))
+
+    client = OpenbisClient(name="default")
+    with pytest.raises(OpenbisAuthError) as excinfo:
+        client.connect()
+    # The error must carry actionable "how to get a new token" help.
+    assert "Personal Access Token" in str(excinfo.value)
+    assert "OPENBIS_TOKEN=" in str(excinfo.value)
+
+
+def test_valid_token_connects(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("OPENBIS_URL", "https://example.invalid")
+    monkeypatch.setenv("OPENBIS_TOKEN", "good-token")
+    _install_fake_pybis(monkeypatch)
+
+    client = OpenbisClient()
+    ob = client.connect()
+    assert ob.is_session_active() is True
+    # Second call returns the cached connection (no re-validation).
+    assert client.connect() is ob
+
+
+def test_pat_instructions_mention_url_and_named_var() -> None:
+    text = pat_setup_instructions("https://openbis.example.org", "aachen")
+    assert "https://openbis.example.org" in text
+    assert "Personal Access Token" in text
+    assert "OPENBIS_AACHEN_TOKEN=" in text
+
+
+def test_discover_instances_named_and_default() -> None:
+    env = {
+        "OPENBIS_URL": "https://default.example",
+        "OPENBIS_TOKEN": "d",
+        "OPENBIS_AACHEN_URL": "https://aachen.example",
+        "OPENBIS_AACHEN_TOKEN": "a",
+        "OPENBIS_TEST_URL": "https://test.example",
+        "OPENBIS_TEST_TOKEN": "t",
+        "OPENBIS_TEST_VERIFY_CERTIFICATES": "false",
+        "OPENBIS_VERIFY_CERTIFICATES": "true",  # must not be read as an instance
+    }
+    configs = discover_instances(env)
+    assert set(configs) == {"default", "aachen", "test"}
+    assert configs["aachen"]["url"] == "https://aachen.example"
+    assert configs["test"]["verify_certificates"] is False
+
+
+def test_discover_instances_token_file(tmp_path: pathlib.Path) -> None:
+    token_path = tmp_path / "aachen.token"
+    token_path.write_text("file-token\n")
+    env = {
+        "OPENBIS_AACHEN_URL": "https://aachen.example",
+        "OPENBIS_AACHEN_TOKEN_FILE": str(token_path),
+    }
+    configs = discover_instances(env)
+    assert configs["aachen"]["token"] == "file-token"
+
+
+def test_resolve_default_prefers_explicit_then_default_then_sole() -> None:
+    two = {"aachen": {}, "test": {}}
+    assert resolve_default(two, {"OPENBIS_DEFAULT_INSTANCE": "TEST"}) == "test"
+    assert resolve_default({"default": {}, "x": {}}, {}) == "default"
+    assert resolve_default({"only": {}}, {}) == "only"
+    assert resolve_default(two, {}) is None  # ambiguous
+
+
+def test_manager_unknown_instance_raises() -> None:
+    mgr = ConnectionManager({"OPENBIS_URL": "https://d.example", "OPENBIS_TOKEN": "x"})
+    with pytest.raises(OpenbisConfigError, match="Unknown openBIS instance"):
+        mgr.client("nope")
+
+
+def test_manager_ambiguous_default_raises() -> None:
+    env = {
+        "OPENBIS_AACHEN_URL": "https://a.example",
+        "OPENBIS_AACHEN_TOKEN": "a",
+        "OPENBIS_TEST_URL": "https://t.example",
+        "OPENBIS_TEST_TOKEN": "t",
+    }
+    mgr = ConnectionManager(env)
+    with pytest.raises(OpenbisConfigError, match="no default is set"):
+        mgr.client(None)
+
+
+def test_manager_routes_to_named_instance(monkeypatch: pytest.MonkeyPatch) -> None:
+    _install_fake_pybis(monkeypatch)
+    env = {
+        "OPENBIS_AACHEN_URL": "https://aachen.example",
+        "OPENBIS_AACHEN_TOKEN": "a",
+        "OPENBIS_TEST_URL": "https://test.example",
+        "OPENBIS_TEST_TOKEN": "t",
+    }
+    mgr = ConnectionManager(env)
+    assert mgr.client("aachen").connect().url == "https://aachen.example"
+    assert mgr.client("test").connect().url == "https://test.example"
+    assert mgr.client("aachen") is mgr.client("aachen")  # cached
+
+
+def test_check_authentication_reports_help(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "openbis_mcp_server.server.ConnectionManager",
+        lambda: ConnectionManager(
+            {"OPENBIS_URL": "https://example.invalid", "OPENBIS_TOKEN": "stale-token"}
+        ),
+    )
+    _install_fake_pybis(monkeypatch, invalid_tokens=("stale-token",))
+
+    import openbis_mcp_server.server as server
+
+    server._manager_instance = None
+    result = server.check_authentication()  # no instance → checks all
+    assert result["ok"] is False
+    default_result = result["instances"]["default"]
+    assert default_result["error"] == "authentication"
+    assert "OPENBIS_TOKEN=" in default_result["help"]
+    server._manager_instance = None
