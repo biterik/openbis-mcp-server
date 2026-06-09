@@ -24,9 +24,9 @@ authors:
     orcid: "https://orcid.org/0000-0001-7430-3694"
   - family-names: Siemer
     given-names: Niklas
-    # email: ""          # TODO: add Niklas's email
-    # affiliation: ""    # TODO: add Niklas's affiliation
-    # orcid: ""          # TODO: add Niklas's ORCID
+    email: n.siemer@mpi-susmat.de 
+    # affiliation: "Max-Planck-Institut für Nachhaltige Materialien (MPI-SusMat)"
+    # orcid: "https://orcid.org/0000-0002-4951-3021"          
 license: MPL-2.0
 repository-code: "https://github.com/biterik/openbis-mcp-server"
 url: "https://github.com/biterik/openbis-mcp-server"
