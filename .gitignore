@@ -50,3 +50,4 @@ Thumbs.db
 # --- openBIS / pyBIS local caches ---
 *.pkl
 .pybis_cache/
+.claude/
