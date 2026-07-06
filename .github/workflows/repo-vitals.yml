@@ -1,0 +1,23 @@
+# The one file a consumer repo adds (ARCHITECTURE.md §3.2).
+# deploy/rollout.sh (M5) copies this into .github/workflows/repo-vitals.yml.
+name: repo-vitals
+
+on:
+  schedule:
+    - cron: "17 3 * * *"   # daily, off-peak minute to avoid cron congestion
+  workflow_dispatch:        # manual runs / backfill
+
+permissions:
+  contents: write   # push to the vitals branch
+  actions: write    # let the action re-enable this workflow after auto-disable
+
+concurrency:
+  group: repo-vitals
+
+jobs:
+  vitals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: biterik/repo-vitals@v1
+        with:
+          traffic-token: ${{ secrets.REPO_VITALS_TOKEN }}  # optional PAT, see README
