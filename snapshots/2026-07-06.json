@@ -1,0 +1,171 @@
+{
+  "activity": {
+    "commits_30d": 3,
+    "contributors_total": 3,
+    "issues_closed_30d": 0,
+    "issues_opened_30d": 0,
+    "prs_merged_30d": 1,
+    "prs_opened_30d": 3
+  },
+  "collected_at": "2026-07-06T14:49:10Z",
+  "date": "2026-07-06",
+  "errors": [],
+  "meta": {
+    "archived": false,
+    "created_at": "2026-05-05T12:19:10Z",
+    "default_branch": "main",
+    "fork": false,
+    "open_issues": 2,
+    "pushed_at": "2026-07-06T14:48:49Z",
+    "size_kb": 83
+  },
+  "popularity": {
+    "forks": 1,
+    "stars": 2,
+    "subscribers": 0,
+    "watchers": 2
+  },
+  "releases": [
+    {
+      "assets": [],
+      "name": "v0.0.1",
+      "prerelease": false,
+      "published_at": "2026-06-09T20:09:39Z",
+      "tag": "v0.0.1"
+    }
+  ],
+  "repo": "biterik/openbis-mcp-server",
+  "schema_version": 1,
+  "traffic": {
+    "clones": {
+      "2026-06-22": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-23": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-24": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-25": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-26": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-27": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-28": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-29": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-30": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-01": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-07-02": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-03": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-04": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-05": {
+        "count": 0,
+        "uniques": 0
+      }
+    },
+    "paths": [
+      {
+        "count": 7,
+        "path": "/biterik/openbis-mcp-server",
+        "uniques": 2
+      }
+    ],
+    "referrers": [
+      {
+        "count": 1,
+        "referrer": "github.com",
+        "uniques": 1
+      }
+    ],
+    "views": {
+      "2026-06-22": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-23": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-24": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-25": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-26": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-27": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-28": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-29": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-30": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-01": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-02": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-07-03": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-07-04": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-05": {
+        "count": 1,
+        "uniques": 1
+      }
+    }
+  }
+}

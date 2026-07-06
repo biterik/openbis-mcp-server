@@ -1,0 +1,235 @@
+{
+  "activity": {
+    "commits_30d": 3,
+    "contributors_total": 3,
+    "issues_closed_30d": 0,
+    "issues_opened_30d": 0,
+    "prs_merged_30d": 1,
+    "prs_opened_30d": 3
+  },
+  "collected_at": "2026-07-06T14:49:10Z",
+  "date": "2026-07-06",
+  "derived": {
+    "clones_last_30d": 4,
+    "clones_last_7d": 1,
+    "downloads_gained_30d": 0,
+    "downloads_total": 0,
+    "funnel_30d": {
+      "downloads_gained": 0,
+      "stars_gained": 0,
+      "unique_cloners": 4,
+      "unique_visitors": 7
+    },
+    "health": {
+      "components": {
+        "activity": 29,
+        "community": 26,
+        "release_adoption": 10,
+        "traffic_trend": 50
+      },
+      "note": "heuristic composite \u2014 weights fixed in v1, configurable later",
+      "score": 35,
+      "weights": {
+        "activity": 0.3,
+        "community": 0.2,
+        "release_adoption": 0.1,
+        "traffic_trend": 0.4
+      }
+    },
+    "history_days": 16,
+    "star_forecast": {
+      "eta_exponential": null,
+      "eta_linear": null,
+      "next_milestone": 10,
+      "stars_per_day": 0.0
+    },
+    "stars_gained_30d": 0,
+    "stars_gained_7d": 0,
+    "stars_now": 2,
+    "views_last_30d": 7,
+    "views_last_7d": 3,
+    "views_prev_7d": 3,
+    "windows": {
+      "30d": {
+        "clones": 4,
+        "downloads_gained": 0,
+        "stars_gained": 0,
+        "unique_visitors": 7,
+        "views": 7
+      },
+      "365d": {
+        "clones": 4,
+        "downloads_gained": 0,
+        "stars_gained": 2,
+        "unique_visitors": 7,
+        "views": 7
+      },
+      "90d": {
+        "clones": 4,
+        "downloads_gained": 0,
+        "stars_gained": 2,
+        "unique_visitors": 7,
+        "views": 7
+      }
+    }
+  },
+  "errors": [],
+  "meta": {
+    "archived": false,
+    "created_at": "2026-05-05T12:19:10Z",
+    "default_branch": "main",
+    "fork": false,
+    "open_issues": 2,
+    "pushed_at": "2026-07-06T14:48:49Z",
+    "size_kb": 83
+  },
+  "popularity": {
+    "forks": 1,
+    "stars": 2,
+    "subscribers": 0,
+    "watchers": 2
+  },
+  "releases": [
+    {
+      "assets": [],
+      "name": "v0.0.1",
+      "prerelease": false,
+      "published_at": "2026-06-09T20:09:39Z",
+      "tag": "v0.0.1"
+    }
+  ],
+  "repo": "biterik/openbis-mcp-server",
+  "schema_version": 1,
+  "traffic": {
+    "clones": {
+      "2026-06-22": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-23": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-24": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-25": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-26": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-27": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-28": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-29": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-30": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-01": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-07-02": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-03": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-04": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-05": {
+        "count": 0,
+        "uniques": 0
+      }
+    },
+    "paths": [
+      {
+        "count": 7,
+        "path": "/biterik/openbis-mcp-server",
+        "uniques": 2
+      }
+    ],
+    "referrers": [
+      {
+        "count": 1,
+        "referrer": "github.com",
+        "uniques": 1
+      }
+    ],
+    "views": {
+      "2026-06-22": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-23": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-24": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-25": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-06-26": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-27": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-28": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-29": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-06-30": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-01": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-02": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-07-03": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-07-04": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-07-05": {
+        "count": 1,
+        "uniques": 1
+      }
+    }
+  }
+}
