@@ -1,6 +1,6 @@
 {
-  "color": "orange",
+  "color": "red",
   "label": "health",
-  "message": "32/100",
+  "message": "22/100",
   "schemaVersion": 1
 }
