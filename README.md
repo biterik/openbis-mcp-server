@@ -20,6 +20,8 @@ verified the agent's behaviour on a non-production space.
 
 | Group   | Tool | Purpose |
 |---------|------|---------|
+| session | `list_instances` | Configured openBIS instances and the default |
+| session | `check_authentication` | Validate token(s); on failure, step-by-step help. Checks all instances when none is named |
 | session | `get_server_info` | URL, server version, MCP server version, write state |
 | session | `whoami` | Authenticated user + session active flag |
 | browse  | `list_spaces` | All spaces visible to the user |
@@ -53,6 +55,10 @@ verified the agent's behaviour on a non-production space.
 
 `†` also requires `OPENBIS_MCP_ALLOW_WRITE=1`.
 
+All tools that talk to openBIS accept an optional `instance` argument to select
+a configured server (see [Multiple instances](#multiple-instances)); omit it to
+use the default.
+
 ## Configuration
 
 The server reads connection details from environment variables. Provide credentials
@@ -67,6 +73,33 @@ username + password.
 | `OPENBIS_USERNAME` + `OPENBIS_PASSWORD` | is required | Used only if neither token variable is set. |
 | `OPENBIS_VERIFY_CERTIFICATES` | no | Set to `false` for self-signed dev certs. Default `true`. |
 | `OPENBIS_MCP_ALLOW_WRITE` | no | Set to `1` to enable create/update/delete tools. Default off. |
+
+The bare `OPENBIS_*` variables above define a single instance named `default`.
+The token is validated against the server on first use in a session; if it has
+expired, the failing tool returns step-by-step instructions for creating a new
+one. Run `check_authentication` at the start of a session to verify proactively.
+
+### Multiple instances
+
+To talk to more than one openBIS server in a single session, define each with
+an `OPENBIS_<NAME>_*` prefix. The lower-cased `<NAME>` becomes the instance name
+that every tool accepts via its optional `instance` argument:
+
+```bash
+OPENBIS_AACHEN_URL=https://openbis.imm.rwth-aachen.de
+OPENBIS_AACHEN_TOKEN=...
+OPENBIS_TEST_URL=https://test.openbis.example
+OPENBIS_TEST_TOKEN=...           # OPENBIS_TEST_TOKEN_FILE also works
+OPENBIS_TEST_VERIFY_CERTIFICATES=false
+
+# Optional: which instance tools use when `instance` is omitted.
+OPENBIS_DEFAULT_INSTANCE=aachen
+```
+
+When `instance` is omitted, the server uses `OPENBIS_DEFAULT_INSTANCE`, or the
+sole configured instance, or `default` if present; if several are configured
+with no default, tools ask for an explicit `instance`. Call `list_instances` to
+see what is configured. Tokens are validated per instance on first use.
 
 ### S3 storage configuration
 
@@ -359,6 +392,8 @@ openbis-mcp-server/
     test_smoke.py      # offline tests (no live openBIS needed)
   pyproject.toml
   README.md
+  CITATION.cff
+  LICENSE
   .env.example
   .gitignore
 ```
@@ -375,7 +410,31 @@ openbis-mcp-server/
 - [ ] Bulk operations (multi-sample / multi-dataset create in one call)
 - [ ] Search predicates richer than equality (`>=`, `contains`, date ranges)
 
+## Authors
+
+- Erik Bitzek (<e.bitzek@mpi-susmat.de>)
+- Niklas Siemer
+
+Implemented with assistance from [Claude Code](https://claude.com/claude-code) (Anthropic).
+
+## Citation
+
+If you use this software, please cite it using the metadata in
+[`CITATION.cff`](CITATION.cff).
+
 ## License
 
-Currently unlicensed (all rights reserved by default). A permissive license
-will be added before any external contributions are accepted.
+Licensed under the [Mozilla Public License 2.0](https://mozilla.org/MPL/2.0/)
+(MPL-2.0). You may use, modify, and distribute this software freely, including
+in proprietary and commercial products. It is provided **without any warranty**.
+MPL-2.0 is a file-level copyleft: if you modify the source files in this
+project, those modified files must be made available under the MPL-2.0 — please
+contribute improvements back. See the [`LICENSE`](LICENSE) file for the full text.
+
+## Funding
+
+Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation)
+under the National Research Data Infrastructure – NFDI 38/1 – project number
+460247524 (NFDI-MatWerk consortium) and through the Collaborative Research
+Center (CRC) 1394 “Structural and Chemical Atomic Complexity - from defect phase
+diagrams to material properties” – project ID 409476157.

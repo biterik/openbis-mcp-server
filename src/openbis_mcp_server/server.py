@@ -1,3 +1,15 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Erik Bitzek and Niklas Siemer.
+#
+# Authors:
+#   Erik Bitzek    <e.bitzek@mpi-susmat.de>
+#   Niklas Siemer
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
+#
+# Implemented with assistance from Claude Code (Anthropic).
 """FastMCP server definition for openbis-mcp-server.
 
 Tools are organised into groups:
@@ -24,7 +36,12 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 from . import __version__
-from .openbis_client import OpenbisClient, OpenbisConfigError
+from .openbis_client import (
+    ConnectionManager,
+    OpenbisAuthError,
+    OpenbisConfigError,
+    pat_setup_instructions,
+)
 from .s3_support import (
     S3ConfigError,
     generate_presigned_url,
@@ -34,15 +51,46 @@ from .s3_support import (
 
 mcp = FastMCP("openbis-mcp-server")
 
-_client: OpenbisClient | None = None
+# One manager owns a client per configured openBIS instance. Clients connect
+# lazily on first use, so importing this module never touches the network.
+_manager_instance: ConnectionManager | None = None
 
 
-def _get_client() -> OpenbisClient:
-    """Return the shared OpenbisClient, creating it on first use."""
-    global _client
-    if _client is None:
-        _client = OpenbisClient()
-    return _client
+def _manager() -> ConnectionManager:
+    global _manager_instance
+    if _manager_instance is None:
+        _manager_instance = ConnectionManager()
+    return _manager_instance
+
+
+def _get_client(instance: str | None = None):
+    """Return the OpenbisClient for ``instance`` (or the default), creating it lazily."""
+    return _manager().client(instance)
+
+
+def _connection_error_payload(e: Exception, instance: str | None = None) -> dict[str, Any]:
+    """Convert a connection/auth failure into a structured, help-bearing dict.
+
+    Auth failures carry verbatim setup instructions in ``help`` so an agent can
+    relay exactly how to mint and store a fresh personal access token.
+    """
+    payload: dict[str, Any] = {"ok": False}
+    if instance is not None:
+        payload["instance"] = instance
+    if isinstance(e, OpenbisConfigError):
+        url = os.environ.get("OPENBIS_URL") or "<your openBIS URL>"
+        payload.update(
+            error="configuration",
+            detail=str(e),
+            help=pat_setup_instructions(url, instance),
+        )
+        return payload
+    if isinstance(e, OpenbisAuthError):
+        # The message already contains the full set-up instructions.
+        payload.update(error="authentication", help=str(e))
+        return payload
+    payload.update(error="connection", detail=str(e))
+    return payload
 
 
 def _write_enabled() -> bool:
@@ -115,22 +163,77 @@ def _entity_to_dict(e: Any, include_relations: bool = True) -> dict[str, Any]:
 
 
 @mcp.tool()
-def get_server_info() -> dict[str, Any]:
+def list_instances() -> dict[str, Any]:
+    """List the configured openBIS instances and which one is the default.
+
+    Every other tool accepts an optional ``instance`` argument naming one of
+    these; omitting it uses the default. Tokens are never returned.
+    """
+    mgr = _manager()
+    return {"instances": mgr.names(), "default": mgr.default}
+
+
+def _check_one(instance: str | None) -> dict[str, Any]:
+    """Validate a single instance's credentials and return a structured result."""
+    try:
+        ob = _get_client(instance).connect()
+    except Exception as e:  # noqa: BLE001 — surfaced as structured help below
+        return _connection_error_payload(e, instance)
+
+    client = _get_client(instance)
+    result: dict[str, Any] = {
+        "ok": True,
+        "instance": client.name,
+        "url": client.url,
+        "message": "openBIS credentials are valid.",
+    }
+    try:
+        result["session_active"] = bool(ob.is_session_active())
+    except Exception:  # noqa: BLE001 — metadata only
+        pass
+    return result
+
+
+@mcp.tool()
+def check_authentication(instance: str | None = None) -> dict[str, Any]:
+    """Verify that openBIS credentials are still valid.
+
+    Call this once at the start of a session before doing real work. With no
+    ``instance``, every configured instance is checked; pass a name to check
+    just one. If a personal access token has expired or is otherwise rejected,
+    the per-instance ``help`` field contains step-by-step instructions for
+    creating a new token and where to store it.
+    """
+    if instance is not None:
+        return _check_one(instance)
+
+    names = _manager().names()
+    if not names:
+        return _check_one(None)  # surfaces the "no instance configured" help
+    results = {name: _check_one(name) for name in names}
+    return {
+        "ok": all(r.get("ok") for r in results.values()),
+        "instances": results,
+    }
+
+
+@mcp.tool()
+def get_server_info(instance: str | None = None) -> dict[str, Any]:
     """Return openBIS server URL, version, and this MCP server's version + write state.
 
     Use this as a smoke test to verify connectivity and authentication before
-    issuing any other calls.
+    issuing any other calls. ``instance`` selects a configured server (default
+    if omitted); see list_instances.
     """
     try:
-        client = _get_client()
+        client = _get_client(instance)
         ob = client.connect()
-    except OpenbisConfigError as e:
-        return {"ok": False, "error": f"configuration: {e}"}
-    except Exception as e:  # noqa: BLE001 — pyBIS raises bare Exception on auth failure
-        return {"ok": False, "error": f"connection: {e}"}
+    except Exception as e:  # config/auth/connection — formatted with help below
+        return _connection_error_payload(e, instance)
 
     info: dict[str, Any] = {
         "ok": True,
+        "instance": client.name,
         "url": client.url,
         "mcp_server_version": __version__,
         "write_enabled": _write_enabled(),
@@ -155,14 +258,14 @@ def get_server_info() -> dict[str, Any]:
 
 
 @mcp.tool()
-def whoami() -> dict[str, Any]:
+def whoami(instance: str | None = None) -> dict[str, Any]:
     """Return the authenticated user (parsed from the session token) and session state."""
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     token = getattr(ob, "token", None) or ""
     return {
         "user": token.split("-")[0] if token else None,
         "session_active": bool(ob.is_session_active()),
-        "url": _get_client().url,
+        "url": _get_client(instance).url,
         "write_enabled": _write_enabled(),
     }
 
@@ -171,15 +274,17 @@ def whoami() -> dict[str, Any]:
 
 
 @mcp.tool()
-def list_spaces() -> list[dict[str, Any]]:
+def list_spaces(instance: str | None = None) -> list[dict[str, Any]]:
     """List all openBIS spaces visible to the authenticated user."""
-    return _records(_get_client().connect().get_spaces())
+    return _records(_get_client(instance).connect().get_spaces())
 
 
 @mcp.tool()
-def list_projects(space: str | None = None) -> list[dict[str, Any]]:
+def list_projects(
+    space: str | None = None, instance: str | None = None
+) -> list[dict[str, Any]]:
     """List projects, optionally restricted to one space code."""
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     return _records(ob.get_projects(space=space) if space else ob.get_projects())
 
 
@@ -189,6 +294,7 @@ def list_experiments(
     project: str | None = None,
     type: str | None = None,
     limit: int = 200,
+    instance: str | None = None,
 ) -> list[dict[str, Any]]:
     """List experiments (collections). Filter by space, project identifier, and/or type code."""
     kwargs: dict[str, Any] = {}
@@ -198,7 +304,7 @@ def list_experiments(
         kwargs["project"] = project
     if type:
         kwargs["type"] = type
-    return _records(_get_client().connect().get_experiments(**kwargs), limit=limit)
+    return _records(_get_client(instance).connect().get_experiments(**kwargs), limit=limit)
 
 
 @mcp.tool()
@@ -208,6 +314,7 @@ def list_samples(
     experiment: str | None = None,
     type: str | None = None,
     limit: int = 200,
+    instance: str | None = None,
 ) -> list[dict[str, Any]]:
     """List samples (objects). Filter by space, project, experiment identifier, and/or type code."""
     kwargs: dict[str, Any] = {}
@@ -219,7 +326,7 @@ def list_samples(
         kwargs["experiment"] = experiment
     if type:
         kwargs["type"] = type
-    return _records(_get_client().connect().get_samples(**kwargs), limit=limit)
+    return _records(_get_client(instance).connect().get_samples(**kwargs), limit=limit)
 
 
 @mcp.tool()
@@ -230,6 +337,7 @@ def list_datasets(
     sample: str | None = None,
     type: str | None = None,
     limit: int = 200,
+    instance: str | None = None,
 ) -> list[dict[str, Any]]:
     """List datasets. Filter by space, project, experiment, sample, and/or dataset type code."""
     kwargs: dict[str, Any] = {}
@@ -243,18 +351,20 @@ def list_datasets(
         kwargs["sample"] = sample
     if type:
         kwargs["type"] = type
-    return _records(_get_client().connect().get_datasets(**kwargs), limit=limit)
+    return _records(_get_client(instance).connect().get_datasets(**kwargs), limit=limit)
 
 
 @mcp.tool()
-def get_entity(kind: str, identifier: str) -> dict[str, Any]:
+def get_entity(
+    kind: str, identifier: str, instance: str | None = None
+) -> dict[str, Any]:
     """Fetch full metadata for one entity.
 
     kind: one of "space", "project", "experiment", "sample", "dataset"
     identifier: openBIS identifier (e.g. "/SPACE/PROJ/EXP", "/SPACE/SAMPLE_CODE")
                 or permId (datasets are typically referenced by permId).
     """
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     fetch = {
         "space": ob.get_space,
         "project": ob.get_project,
@@ -280,6 +390,7 @@ def search_samples(
     type: str | None = None,
     space: str | None = None,
     limit: int = 100,
+    instance: str | None = None,
 ) -> list[dict[str, Any]]:
     """Search samples by property values.
 
@@ -293,7 +404,7 @@ def search_samples(
         kwargs["type"] = type
     if space:
         kwargs["space"] = space
-    return _records(_get_client().connect().get_samples(**kwargs), limit=limit)
+    return _records(_get_client(instance).connect().get_samples(**kwargs), limit=limit)
 
 
 @mcp.tool()
@@ -302,6 +413,7 @@ def search_datasets(
     type: str | None = None,
     space: str | None = None,
     limit: int = 100,
+    instance: str | None = None,
 ) -> list[dict[str, Any]]:
     """Search datasets by property values. See search_samples for argument shape."""
     kwargs: dict[str, Any] = {}
@@ -311,41 +423,43 @@ def search_datasets(
         kwargs["type"] = type
     if space:
         kwargs["space"] = space
-    return _records(_get_client().connect().get_datasets(**kwargs), limit=limit)
+    return _records(_get_client(instance).connect().get_datasets(**kwargs), limit=limit)
 
 
 # ---------------- schema / vocab ----------------
 
 
 @mcp.tool()
-def list_sample_types() -> list[dict[str, Any]]:
+def list_sample_types(instance: str | None = None) -> list[dict[str, Any]]:
     """List all sample (object) types defined on the server."""
-    return _records(_get_client().connect().get_sample_types())
+    return _records(_get_client(instance).connect().get_sample_types())
 
 
 @mcp.tool()
-def list_dataset_types() -> list[dict[str, Any]]:
+def list_dataset_types(instance: str | None = None) -> list[dict[str, Any]]:
     """List all dataset types defined on the server."""
-    return _records(_get_client().connect().get_dataset_types())
+    return _records(_get_client(instance).connect().get_dataset_types())
 
 
 @mcp.tool()
-def list_experiment_types() -> list[dict[str, Any]]:
+def list_experiment_types(instance: str | None = None) -> list[dict[str, Any]]:
     """List all experiment (collection) types defined on the server."""
-    return _records(_get_client().connect().get_experiment_types())
+    return _records(_get_client(instance).connect().get_experiment_types())
 
 
 @mcp.tool()
-def list_vocabularies() -> list[dict[str, Any]]:
+def list_vocabularies(instance: str | None = None) -> list[dict[str, Any]]:
     """List all controlled vocabularies."""
-    return _records(_get_client().connect().get_vocabularies())
+    return _records(_get_client(instance).connect().get_vocabularies())
 
 
 @mcp.tool()
-def get_property_types(entity_type: str | None = None) -> list[dict[str, Any]]:
+def get_property_types(
+    entity_type: str | None = None, instance: str | None = None
+) -> list[dict[str, Any]]:
     """List property types. If entity_type is given (a sample/dataset/experiment type code),
     list its assigned properties instead."""
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     if entity_type:
         for getter_name in (
             "get_sample_type",
@@ -369,9 +483,11 @@ def get_property_types(entity_type: str | None = None) -> list[dict[str, Any]]:
 
 
 @mcp.tool()
-def list_dataset_files(dataset_permid: str) -> list[dict[str, Any]]:
+def list_dataset_files(
+    dataset_permid: str, instance: str | None = None
+) -> list[dict[str, Any]]:
     """List files inside a dataset (path, size, checksum, isDirectory). Does not download contents."""
-    ds = _get_client().connect().get_dataset(dataset_permid)
+    ds = _get_client(instance).connect().get_dataset(dataset_permid)
     return [
         {
             "path": f.get("pathInDataSet"),
@@ -385,7 +501,7 @@ def list_dataset_files(dataset_permid: str) -> list[dict[str, Any]]:
 
 @mcp.tool()
 def download_dataset_file(
-    dataset_permid: str, path_in_dataset: str, dest_dir: str
+    dataset_permid: str, path_in_dataset: str, dest_dir: str, instance: str | None = None
 ) -> dict[str, Any]:
     """Download one file from a dataset to a local directory.
 
@@ -396,7 +512,7 @@ def download_dataset_file(
     dest = Path(dest_dir).expanduser()
     if not dest.is_dir():
         raise ValueError(f"dest_dir '{dest}' is not an existing directory.")
-    ds = _get_client().connect().get_dataset(dataset_permid)
+    ds = _get_client(instance).connect().get_dataset(dataset_permid)
     written = ds.download(
         files=[path_in_dataset], destination=str(dest), wait_until_finished=True
     )
@@ -412,11 +528,11 @@ def download_dataset_file(
 
 @mcp.tool()
 def create_project(
-    space: str, code: str, description: str | None = None
+    space: str, code: str, description: str | None = None, instance: str | None = None
 ) -> dict[str, Any]:
     """Create a new project under a space. Requires OPENBIS_MCP_ALLOW_WRITE=1."""
     _require_write()
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     p = ob.new_project(space=space, code=code, description=description)
     p.save()
     return _entity_to_dict(p, include_relations=False)
@@ -424,7 +540,11 @@ def create_project(
 
 @mcp.tool()
 def create_experiment(
-    project: str, type: str, code: str, properties: dict[str, Any] | None = None
+    project: str,
+    type: str,
+    code: str,
+    properties: dict[str, Any] | None = None,
+    instance: str | None = None,
 ) -> dict[str, Any]:
     """Create a new experiment (collection). Requires OPENBIS_MCP_ALLOW_WRITE=1.
 
@@ -434,7 +554,7 @@ def create_experiment(
     properties: optional dict of property values
     """
     _require_write()
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     e = ob.new_experiment(type=type, project=project, code=code, props=properties or {})
     e.save()
     return _entity_to_dict(e, include_relations=False)
@@ -449,6 +569,7 @@ def create_sample(
     code: str | None = None,
     properties: dict[str, Any] | None = None,
     parents: list[str] | None = None,
+    instance: str | None = None,
 ) -> dict[str, Any]:
     """Create a new sample (object). Requires OPENBIS_MCP_ALLOW_WRITE=1.
 
@@ -459,7 +580,7 @@ def create_sample(
     parents: list of parent sample identifiers
     """
     _require_write()
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     kwargs: dict[str, Any] = {"type": type, "props": properties or {}}
     if space:
         kwargs["space"] = space
@@ -483,6 +604,7 @@ def create_dataset(
     sample: str | None = None,
     experiment: str | None = None,
     properties: dict[str, Any] | None = None,
+    instance: str | None = None,
 ) -> dict[str, Any]:
     """Upload a new dataset from local files. Requires OPENBIS_MCP_ALLOW_WRITE=1.
 
@@ -497,7 +619,7 @@ def create_dataset(
     for f in files:
         if not Path(f).expanduser().exists():
             raise ValueError(f"File not found: {f}")
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     kwargs: dict[str, Any] = {"type": type, "files": files, "props": properties or {}}
     if sample:
         kwargs["sample"] = sample
@@ -516,13 +638,14 @@ def update_sample(
     remove_parents: list[str] | None = None,
     add_children: list[str] | None = None,
     remove_children: list[str] | None = None,
+    instance: str | None = None,
 ) -> dict[str, Any]:
     """Update a sample's properties or parent/child links. Requires OPENBIS_MCP_ALLOW_WRITE=1.
 
     Parent/child changes are explicit add/remove (no full replacement) to avoid accidental data loss.
     """
     _require_write()
-    s = _get_client().connect().get_sample(identifier)
+    s = _get_client(instance).connect().get_sample(identifier)
     if properties:
         for k, v in properties.items():
             s.props[k] = v
@@ -539,10 +662,12 @@ def update_sample(
 
 
 @mcp.tool()
-def update_dataset(permid: str, properties: dict[str, Any]) -> dict[str, Any]:
+def update_dataset(
+    permid: str, properties: dict[str, Any], instance: str | None = None
+) -> dict[str, Any]:
     """Update a dataset's properties. Requires OPENBIS_MCP_ALLOW_WRITE=1."""
     _require_write()
-    ds = _get_client().connect().get_dataset(permid)
+    ds = _get_client(instance).connect().get_dataset(permid)
     for k, v in properties.items():
         ds.props[k] = v
     ds.save()
@@ -550,7 +675,9 @@ def update_dataset(permid: str, properties: dict[str, Any]) -> dict[str, Any]:
 
 
 @mcp.tool()
-def delete_entity(kind: str, identifier: str, reason: str) -> dict[str, Any]:
+def delete_entity(
+    kind: str, identifier: str, reason: str, instance: str | None = None
+) -> dict[str, Any]:
     """Delete an entity. Requires OPENBIS_MCP_ALLOW_WRITE=1.
 
     Irreversible — a non-empty 'reason' is required and stored as the deletion log entry.
@@ -558,7 +685,7 @@ def delete_entity(kind: str, identifier: str, reason: str) -> dict[str, Any]:
     _require_write()
     if not reason or not reason.strip():
         raise ValueError("A non-empty 'reason' is required for deletion.")
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     fetch = {
         "space": ob.get_space,
         "project": ob.get_project,
@@ -628,6 +755,7 @@ def create_s3_linked_dataset(
     sample: str | None = None,
     experiment: str | None = None,
     properties: dict[str, Any] | None = None,
+    instance: str | None = None,
 ) -> dict[str, Any]:
     """Upload a local file to S3 and register it as a LINK-kind dataset in openBIS.
 
@@ -653,7 +781,7 @@ def create_s3_linked_dataset(
     if not Path(file).expanduser().is_file():
         raise ValueError(f"File not found: {file}")
 
-    ob = _get_client().connect()
+    ob = _get_client(instance).connect()
     return upload_and_register_s3_linked_dataset(
         ob=ob,
         filename=str(Path(file).expanduser()),
