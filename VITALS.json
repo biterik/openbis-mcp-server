@@ -7,36 +7,29 @@
     "prs_merged_30d": 1,
     "prs_opened_30d": 1
   },
-  "collected_at": "2026-08-04T06:03:16Z",
+  "collected_at": "2026-08-04T20:55:40Z",
   "date": "2026-08-04",
   "derived": {
-    "clones_last_30d": 89,
-    "clones_last_7d": 16,
+    "clones_last_30d": 90,
+    "clones_last_7d": 17,
     "downloads_gained_30d": 0,
     "downloads_total": 0,
     "funnel_30d": {
       "downloads_gained": 0,
       "stars_gained": 0,
-      "unique_cloners": 69,
-      "unique_visitors": 10
-    },
-    "health": {
-      "components": {
-        "activity": 15,
-        "community": 26,
-        "release_adoption": 10,
-        "traffic_trend": 50
-      },
-      "note": "heuristic composite \u2014 weights fixed in v1, configurable later",
-      "score": 31,
-      "weights": {
-        "activity": 0.3,
-        "community": 0.2,
-        "release_adoption": 0.1,
-        "traffic_trend": 0.4
-      }
+      "unique_cloners": 70,
+      "unique_visitors": 11
     },
     "history_days": 45,
+    "per_30d": {
+      "clones": 64.1,
+      "downloads_gained": 0.0,
+      "stars_gained": 1.4,
+      "unique_cloners": 50.5,
+      "unique_visitors": 12.3,
+      "views": 12.3
+    },
+    "repo_created_at": "2026-05-05T12:19:10Z",
     "star_forecast": {
       "eta_exponential": null,
       "eta_linear": null,
@@ -46,30 +39,40 @@
     "stars_gained_30d": 0,
     "stars_gained_7d": 0,
     "stars_now": 2,
-    "views_last_30d": 10,
-    "views_last_7d": 2,
+    "totals": {
+      "clones": 94,
+      "downloads_gained": 0,
+      "stars_gained": 2,
+      "unique_cloners": 74,
+      "unique_visitors": 18,
+      "views": 18
+    },
+    "tracking_days": 44,
+    "tracking_since": "2026-06-22",
+    "views_last_30d": 11,
+    "views_last_7d": 3,
     "views_prev_7d": 2,
     "windows": {
       "30d": {
-        "clones": 89,
+        "clones": 90,
         "downloads_gained": 0,
         "stars_gained": 0,
-        "unique_visitors": 10,
-        "views": 10
+        "unique_visitors": 11,
+        "views": 11
       },
       "365d": {
-        "clones": 93,
+        "clones": 94,
         "downloads_gained": 0,
         "stars_gained": 2,
-        "unique_visitors": 17,
-        "views": 17
+        "unique_visitors": 18,
+        "views": 18
       },
       "90d": {
-        "clones": 93,
+        "clones": 94,
         "downloads_gained": 0,
         "stars_gained": 2,
-        "unique_visitors": 17,
-        "views": 17
+        "unique_visitors": 18,
+        "views": 18
       }
     }
   },
@@ -80,8 +83,8 @@
     "default_branch": "main",
     "fork": false,
     "open_issues": 2,
-    "pushed_at": "2026-08-03T06:33:17Z",
-    "size_kb": 103
+    "pushed_at": "2026-08-04T06:03:19Z",
+    "size_kb": 104
   },
   "popularity": {
     "forks": 1,
@@ -102,10 +105,6 @@
   "schema_version": 1,
   "traffic": {
     "clones": {
-      "2026-07-20": {
-        "count": 2,
-        "uniques": 2
-      },
       "2026-07-21": {
         "count": 7,
         "uniques": 4
@@ -157,11 +156,15 @@
       "2026-08-02": {
         "count": 1,
         "uniques": 1
+      },
+      "2026-08-03": {
+        "count": 1,
+        "uniques": 1
       }
     },
     "paths": [
       {
-        "count": 4,
+        "count": 5,
         "path": "/biterik/openbis-mcp-server",
         "uniques": 2
       }
@@ -174,10 +177,6 @@
       }
     ],
     "views": {
-      "2026-07-20": {
-        "count": 0,
-        "uniques": 0
-      },
       "2026-07-21": {
         "count": 0,
         "uniques": 0
@@ -229,6 +228,10 @@
       "2026-08-02": {
         "count": 0,
         "uniques": 0
+      },
+      "2026-08-03": {
+        "count": 1,
+        "uniques": 1
       }
     }
   }

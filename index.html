@@ -44,7 +44,6 @@ header h1 a { color:var(--text); text-decoration:none; }
 .card .k { color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; }
 .card .v { font-size:1.5rem; font-weight:650; margin-top:2px; }
 .card .d { color:var(--muted); font-size:.8rem; margin-top:2px; }
-.health-good { color:#2da44e; } .health-mid { color:#bf8700; } .health-bad { color:#cf222e; }
 section { margin-top:26px; }
 section h2 { font-size:1.05rem; margin:0 0 8px; }
 .chart {
@@ -111,7 +110,9 @@ footer a { color:var(--accent); }
   <footer>
     <a href="https://github.com/biterik/repo-vitals">repo-vitals</a> by Erik Bitzek ·
     <a href="REPORT.md">REPORT.md</a> · <a href="VITALS.json">VITALS.json</a> ·
-    gaps in the charts are days without collected data — never interpolated.
+    gaps in the charts are days without collected data — never interpolated ·
+    totals and averages cover the tracking period shown above, not the repository's
+    full lifetime.
   </footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
@@ -148,23 +149,31 @@ footer a { color:var(--accent); }
   document.title = vitals.repo + " · vitals";
   $("repo-name").innerHTML =
     '<a href="https://github.com/' + esc(vitals.repo) + '">' + esc(vitals.repo) + "</a> — vitals";
-  $("updated").innerHTML = "updated " + esc(vitals.collected_at) + " (UTC) · " +
-    fmt(derived.history_days) + " days of history · <a href='REPORT.md'>daily report</a>";
+  // Provenance: how old the repo is vs. how much of it this archive covers.
+  // repo_created_at is new in 1.4; fall back to meta so older data still shows it.
+  const created = (((vitals.meta || {}).created_at) || derived.repo_created_at || "").slice(0, 10);
+  const since = derived.tracking_since || "";
+  const sinceDays = derived.tracking_days;
+  $("updated").innerHTML = "updated " + esc(vitals.collected_at) + " (UTC)" +
+    (created ? " · repository created " + esc(created) : "") +
+    (since ? " · tracked since " + esc(since) +
+      (sinceDays ? " (" + fmt(sinceDays) + " days)" : "") : "") +
+    " · <a href='REPORT.md'>daily report</a>";
 
   // ---- stat cards -------------------------------------------------------
-  const health = derived.health || { score: null, components: {} };
-  const healthClass = health.score == null ? "" :
-    health.score >= 55 ? "health-good" : health.score >= 30 ? "health-mid" : "health-bad";
+  const totals = derived.totals || {};
+  const per30 = derived.per_30d || {};
   const delta = (v, span) =>
     v == null ? "" : (v >= 0 ? "+" : "") + fmt(v) + " in " + span;
+  const avg = (v) => (v == null ? "" : fmt(v) + " / 30 d average");
   const cards = [
     ["Stars", fmt(derived.stars_now), delta(derived.stars_gained_30d, "30 d")],
     ["Views (30 d)", fmt(derived.views_last_30d), delta(derived.views_last_7d, "7 d")],
     ["Clones (30 d)", fmt(derived.clones_last_30d), ""],
     ["Release downloads", fmt(derived.downloads_total), delta(derived.downloads_gained_30d, "30 d")],
     ["Contributors", fmt((vitals.activity || {}).contributors_total), ""],
-    ["Health", health.score == null ? "–" :
-      '<span class="' + healthClass + '">' + health.score + "/100</span>", "heuristic"],
+    ["Views (total)", fmt(totals.views), avg(per30.views)],
+    ["Clones (total)", fmt(totals.clones), avg(per30.clones)],
   ];
   $("cards").innerHTML = cards.map(([k, v, d]) =>
     '<div class="card"><div class="k">' + k + '</div><div class="v">' + v +

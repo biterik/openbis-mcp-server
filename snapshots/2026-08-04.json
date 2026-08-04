@@ -7,7 +7,7 @@
     "prs_merged_30d": 1,
     "prs_opened_30d": 1
   },
-  "collected_at": "2026-08-04T06:03:16Z",
+  "collected_at": "2026-08-04T20:55:40Z",
   "date": "2026-08-04",
   "errors": [],
   "meta": {
@@ -16,8 +16,8 @@
     "default_branch": "main",
     "fork": false,
     "open_issues": 2,
-    "pushed_at": "2026-08-03T06:33:17Z",
-    "size_kb": 103
+    "pushed_at": "2026-08-04T06:03:19Z",
+    "size_kb": 104
   },
   "popularity": {
     "forks": 1,
@@ -38,10 +38,6 @@
   "schema_version": 1,
   "traffic": {
     "clones": {
-      "2026-07-20": {
-        "count": 2,
-        "uniques": 2
-      },
       "2026-07-21": {
         "count": 7,
         "uniques": 4
@@ -93,11 +89,15 @@
       "2026-08-02": {
         "count": 1,
         "uniques": 1
+      },
+      "2026-08-03": {
+        "count": 1,
+        "uniques": 1
       }
     },
     "paths": [
       {
-        "count": 4,
+        "count": 5,
         "path": "/biterik/openbis-mcp-server",
         "uniques": 2
       }
@@ -110,10 +110,6 @@
       }
     ],
     "views": {
-      "2026-07-20": {
-        "count": 0,
-        "uniques": 0
-      },
       "2026-07-21": {
         "count": 0,
         "uniques": 0
@@ -165,6 +161,10 @@
       "2026-08-02": {
         "count": 0,
         "uniques": 0
+      },
+      "2026-08-03": {
+        "count": 1,
+        "uniques": 1
       }
     }
   }
