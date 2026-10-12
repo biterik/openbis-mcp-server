@@ -1,0 +1,211 @@
+{
+  "activity": {
+    "commits_30d": 0,
+    "contributors_total": 3,
+    "issues_closed_30d": 0,
+    "issues_opened_30d": 0,
+    "prs_merged_30d": 0,
+    "prs_opened_30d": 0
+  },
+  "collected_at": "2026-10-12T10:44:53Z",
+  "date": "2026-10-12",
+  "errors": [],
+  "meta": {
+    "archived": false,
+    "created_at": "2026-05-05T12:19:10Z",
+    "default_branch": "main",
+    "fork": false,
+    "open_issues": 2,
+    "pushed_at": "2026-10-11T09:57:46Z",
+    "size_kb": 200
+  },
+  "popularity": {
+    "forks": 1,
+    "stars": 3,
+    "subscribers": 0,
+    "watchers": 3
+  },
+  "releases": [
+    {
+      "assets": [],
+      "name": "v0.0.1",
+      "prerelease": false,
+      "published_at": "2026-06-09T20:09:39Z",
+      "tag": "v0.0.1"
+    }
+  ],
+  "repo": "biterik/openbis-mcp-server",
+  "schema_version": 1,
+  "traffic": {
+    "clones": {
+      "2026-09-28": {
+        "count": 25,
+        "uniques": 14
+      },
+      "2026-09-29": {
+        "count": 15,
+        "uniques": 10
+      },
+      "2026-09-30": {
+        "count": 4,
+        "uniques": 4
+      },
+      "2026-10-01": {
+        "count": 10,
+        "uniques": 6
+      },
+      "2026-10-02": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-10-03": {
+        "count": 2,
+        "uniques": 2
+      },
+      "2026-10-04": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-10-05": {
+        "count": 3,
+        "uniques": 3
+      },
+      "2026-10-06": {
+        "count": 2,
+        "uniques": 2
+      },
+      "2026-10-07": {
+        "count": 13,
+        "uniques": 9
+      },
+      "2026-10-08": {
+        "count": 10,
+        "uniques": 7
+      },
+      "2026-10-09": {
+        "count": 3,
+        "uniques": 2
+      },
+      "2026-10-10": {
+        "count": 13,
+        "uniques": 7
+      },
+      "2026-10-11": {
+        "count": 2,
+        "uniques": 2
+      }
+    },
+    "paths": [
+      {
+        "count": 17,
+        "path": "/biterik/openbis-mcp-server",
+        "uniques": 7
+      },
+      {
+        "count": 2,
+        "path": "/biterik/openbis-mcp-server/commits",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/blob/main/.env.example",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/blob/main/src/openbis_mcp_server/__main__.py",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/blob/main/src/openbis_mcp_server/openbis_client.py",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/blob/main/src/openbis_mcp_server/server.py",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/tree/main",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/tree/main/src/openbis_mcp_server",
+        "uniques": 1
+      }
+    ],
+    "referrers": [
+      {
+        "count": 2,
+        "referrer": "github.com",
+        "uniques": 1
+      },
+      {
+        "count": 2,
+        "referrer": "search.brave.com",
+        "uniques": 1
+      }
+    ],
+    "views": {
+      "2026-09-28": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-09-29": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-09-30": {
+        "count": 13,
+        "uniques": 3
+      },
+      "2026-10-01": {
+        "count": 4,
+        "uniques": 2
+      },
+      "2026-10-02": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-10-03": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-10-04": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-10-05": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-10-06": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-10-07": {
+        "count": 1,
+        "uniques": 1
+      },
+      "2026-10-08": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-10-09": {
+        "count": 4,
+        "uniques": 4
+      },
+      "2026-10-10": {
+        "count": 0,
+        "uniques": 0
+      },
+      "2026-10-11": {
+        "count": 0,
+        "uniques": 0
+      }
+    }
+  }
+}
