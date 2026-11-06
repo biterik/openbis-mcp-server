@@ -7,72 +7,72 @@
     "prs_merged_30d": 0,
     "prs_opened_30d": 0
   },
-  "collected_at": "2026-11-05T10:50:05Z",
-  "date": "2026-11-05",
+  "collected_at": "2026-11-06T10:49:08Z",
+  "date": "2026-11-06",
   "derived": {
-    "clones_last_30d": 175,
-    "clones_last_7d": 16,
+    "clones_last_30d": 166,
+    "clones_last_7d": 17,
     "downloads_gained_30d": 0,
     "downloads_total": 0,
     "funnel_30d": {
       "downloads_gained": 0,
       "stars_gained": 0,
-      "unique_cloners": 122,
-      "unique_visitors": 29
+      "unique_cloners": 117,
+      "unique_visitors": 30
     },
-    "history_days": 138,
+    "history_days": 139,
     "per_30d": {
       "clones": 117.6,
       "downloads_gained": 0.0,
       "stars_gained": 0.7,
-      "unique_cloners": 86.5,
-      "unique_visitors": 20.8,
-      "views": 28.2
+      "unique_cloners": 86.7,
+      "unique_visitors": 21.1,
+      "views": 28.5
     },
     "repo_created_at": "2026-05-05T12:19:10Z",
     "star_forecast": {
-      "eta_exponential": "2027-05-02",
-      "eta_linear": "2028-01-18",
+      "eta_exponential": "2027-05-01",
+      "eta_linear": "2028-01-16",
       "next_milestone": 10,
-      "stars_per_day": 0.0159
+      "stars_per_day": 0.016
     },
     "stars_gained_30d": 0,
     "stars_gained_7d": 0,
     "stars_now": 3,
     "totals": {
-      "clones": 537,
+      "clones": 541,
       "downloads_gained": 0,
       "stars_gained": 3,
-      "unique_cloners": 395,
-      "unique_visitors": 95,
-      "views": 129
+      "unique_cloners": 399,
+      "unique_visitors": 97,
+      "views": 131
     },
-    "tracking_days": 137,
+    "tracking_days": 138,
     "tracking_since": "2026-06-22",
-    "views_last_30d": 31,
-    "views_last_7d": 9,
-    "views_prev_7d": 10,
+    "views_last_30d": 32,
+    "views_last_7d": 8,
+    "views_prev_7d": 13,
     "windows": {
       "30d": {
-        "clones": 175,
+        "clones": 166,
         "downloads_gained": 0,
         "stars_gained": 0,
-        "unique_visitors": 29,
-        "views": 31
+        "unique_visitors": 30,
+        "views": 32
       },
       "365d": {
-        "clones": 537,
+        "clones": 541,
         "downloads_gained": 0,
         "stars_gained": 3,
-        "unique_visitors": 95,
-        "views": 129
+        "unique_visitors": 97,
+        "views": 131
       },
       "90d": {
-        "clones": 435,
+        "clones": 438,
         "downloads_gained": 0,
         "stars_gained": 1,
-        "unique_visitors": 70,
-        "views": 101
+        "unique_visitors": 72,
+        "views": 103
       }
     }
   },
@@ -83,8 +83,8 @@
     "default_branch": "main",
     "fork": false,
     "open_issues": 2,
-    "pushed_at": "2026-11-04T10:52:17Z",
-    "size_kb": 245
+    "pushed_at": "2026-11-05T10:50:09Z",
+    "size_kb": 246
   },
   "popularity": {
     "forks": 1,
@@ -105,10 +105,6 @@
   "schema_version": 1,
   "traffic": {
     "clones": {
-      "2026-10-22": {
-        "count": 8,
-        "uniques": 4
-      },
       "2026-10-23": {
         "count": 11,
         "uniques": 6
@@ -160,13 +156,17 @@
       "2026-11-04": {
         "count": 2,
         "uniques": 2
+      },
+      "2026-11-05": {
+        "count": 4,
+        "uniques": 4
       }
     },
     "paths": [
       {
-        "count": 18,
+        "count": 20,
         "path": "/biterik/openbis-mcp-server",
-        "uniques": 12
+        "uniques": 13
       },
       {
         "count": 1,
@@ -176,9 +176,9 @@
     ],
     "referrers": [
       {
-        "count": 9,
+        "count": 11,
         "referrer": "teams.public.onecdn.static.microsoft",
-        "uniques": 8
+        "uniques": 9
       },
       {
         "count": 1,
@@ -197,10 +197,6 @@
       }
     ],
     "views": {
-      "2026-10-22": {
-        "count": 0,
-        "uniques": 0
-      },
       "2026-10-23": {
         "count": 0,
         "uniques": 0
@@ -252,6 +248,10 @@
       "2026-11-04": {
         "count": 3,
         "uniques": 3
+      },
+      "2026-11-05": {
+        "count": 2,
+        "uniques": 2
       }
     }
   }
