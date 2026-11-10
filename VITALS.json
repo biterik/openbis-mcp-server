@@ -7,72 +7,72 @@
     "prs_merged_30d": 0,
     "prs_opened_30d": 0
   },
-  "collected_at": "2026-11-09T11:26:51Z",
-  "date": "2026-11-09",
+  "collected_at": "2026-11-10T11:07:19Z",
+  "date": "2026-11-10",
   "derived": {
     "clones_last_30d": 173,
-    "clones_last_7d": 40,
+    "clones_last_7d": 41,
     "downloads_gained_30d": 0,
     "downloads_total": 0,
     "funnel_30d": {
       "downloads_gained": 0,
       "stars_gained": 0,
       "unique_cloners": 123,
-      "unique_visitors": 27
+      "unique_visitors": 30
     },
-    "history_days": 142,
+    "history_days": 143,
     "per_30d": {
-      "clones": 122.1,
+      "clones": 121.7,
       "downloads_gained": 0.0,
       "stars_gained": 0.6,
-      "unique_cloners": 89.6,
-      "unique_visitors": 20.9,
-      "views": 28.1
+      "unique_cloners": 89.4,
+      "unique_visitors": 21.3,
+      "views": 28.5
     },
     "repo_created_at": "2026-05-05T12:19:10Z",
     "star_forecast": {
       "eta_exponential": "2027-04-28",
       "eta_linear": "2028-01-11",
       "next_milestone": 10,
-      "stars_per_day": 0.0163
+      "stars_per_day": 0.0164
     },
     "stars_gained_30d": 0,
     "stars_gained_7d": 0,
     "stars_now": 3,
     "totals": {
-      "clones": 574,
+      "clones": 576,
       "downloads_gained": 0,
       "stars_gained": 3,
-      "unique_cloners": 421,
-      "unique_visitors": 98,
-      "views": 132
+      "unique_cloners": 423,
+      "unique_visitors": 101,
+      "views": 135
     },
-    "tracking_days": 141,
+    "tracking_days": 142,
     "tracking_since": "2026-06-22",
-    "views_last_30d": 29,
-    "views_last_7d": 8,
-    "views_prev_7d": 14,
+    "views_last_30d": 32,
+    "views_last_7d": 9,
+    "views_prev_7d": 15,
     "windows": {
       "30d": {
         "clones": 173,
         "downloads_gained": 0,
         "stars_gained": 0,
-        "unique_visitors": 27,
-        "views": 29
+        "unique_visitors": 30,
+        "views": 32
       },
       "365d": {
-        "clones": 574,
+        "clones": 576,
         "downloads_gained": 0,
         "stars_gained": 3,
-        "unique_visitors": 98,
-        "views": 132
+        "unique_visitors": 101,
+        "views": 135
       },
       "90d": {
-        "clones": 459,
+        "clones": 460,
         "downloads_gained": 0,
         "stars_gained": 1,
-        "unique_visitors": 71,
-        "views": 100
+        "unique_visitors": 73,
+        "views": 101
       }
     }
   },
@@ -83,8 +83,8 @@
     "default_branch": "main",
     "fork": false,
     "open_issues": 2,
-    "pushed_at": "2026-11-08T10:16:31Z",
-    "size_kb": 253
+    "pushed_at": "2026-11-09T11:26:55Z",
+    "size_kb": 252
   },
   "popularity": {
     "forks": 1,
@@ -105,10 +105,6 @@
   "schema_version": 1,
   "traffic": {
     "clones": {
-      "2026-10-26": {
-        "count": 10,
-        "uniques": 6
-      },
       "2026-10-27": {
         "count": 10,
         "uniques": 6
@@ -160,13 +156,17 @@
       "2026-11-08": {
         "count": 2,
         "uniques": 2
+      },
+      "2026-11-09": {
+        "count": 2,
+        "uniques": 2
       }
     },
     "paths": [
       {
-        "count": 21,
+        "count": 24,
         "path": "/biterik/openbis-mcp-server",
-        "uniques": 13
+        "uniques": 14
       },
       {
         "count": 1,
@@ -176,7 +176,7 @@
     ],
     "referrers": [
       {
-        "count": 12,
+        "count": 13,
         "referrer": "teams.public.onecdn.static.microsoft",
         "uniques": 9
       },
@@ -197,10 +197,6 @@
       }
     ],
     "views": {
-      "2026-10-26": {
-        "count": 0,
-        "uniques": 0
-      },
       "2026-10-27": {
         "count": 1,
         "uniques": 1
@@ -252,6 +248,10 @@
       "2026-11-08": {
         "count": 0,
         "uniques": 0
+      },
+      "2026-11-09": {
+        "count": 3,
+        "uniques": 3
       }
     }
   }
