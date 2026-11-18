@@ -26,6 +26,14 @@ authors:
   - family-names: Siemer
     given-names: Niklas
     affiliation: "Max-Planck-Institut for Sustainable Materials, Düsseldorf, Germany"
+doi: 10.5281/zenodo.24346233
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24346233
+    description: Concept DOI, resolves to the latest version
+  - type: doi
+    value: 10.5281/zenodo.24346234
+    description: DOI of version 0.1.0
 repository-code: "https://github.com/biterik/openbis-mcp-server"
 url: "https://github.com/biterik/openbis-mcp-server"
 license: BSD-3-Clause

@@ -1,5 +1,7 @@
 # openbis-mcp-server
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24346233.svg)](https://doi.org/10.5281/zenodo.24346233)
+
 A [Model Context Protocol](https://modelcontextprotocol.io) server that exposes
 [openBIS](https://openbis.ch) (via [pyBIS](https://pypi.org/project/PyBIS/))
 to LLM-based agents such as Claude.
@@ -378,7 +380,8 @@ openbis-mcp-server/
 ## Citation
 
 If you use this software, please cite it via the metadata in
-[`CITATION.cff`](CITATION.cff) (GitHub: "Cite this repository").
+[`CITATION.cff`](CITATION.cff) (GitHub: "Cite this repository"), DOI
+[10.5281/zenodo.24346233](https://doi.org/10.5281/zenodo.24346233).
 
 ## Funding
 
