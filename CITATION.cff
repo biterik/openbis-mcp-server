@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "openbis-mcp-server: Model Context Protocol server exposing openBIS to LLM agents"
+abstract: >-
+  A Model Context Protocol (MCP) server that exposes the openBIS research data
+  management system (via pyBIS) to LLM-based agents such as Claude. Agents can
+  browse spaces, projects, experiments, samples and datasets, inspect the
+  schema (sample types, dataset types, vocabularies, property types), list and
+  download dataset files, register S3-linked datasets and, if explicitly
+  enabled, create, update and delete entities.
+  Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research
+  Foundation) under the National Research Data Infrastructure – NFDI 38/1 –
+  project number 460247524 (NFDI-MatWerk consortium), and through Project
+  No. A02 of the SFB 1394 "Structural and Chemical Atomic Complexity – From
+  Defect Phase Diagrams to Material Properties", Project ID 409476157.
+type: software
+authors:
+  - family-names: Bitzek
+    given-names: Erik
+    orcid: "https://orcid.org/0000-0001-7430-3694"
+    email: e.bitzek@mpi-susmat.de
+    affiliation: >-
+      Max-Planck-Institut for Sustainable Materials, Düsseldorf, Germany;
+      Institute of Materials Simulation (WW8), Friedrich-Alexander-Universität
+      Erlangen-Nürnberg (FAU), Fürth, Germany
+  - family-names: Siemer
+    given-names: Niklas
+    affiliation: "Max-Planck-Institut for Sustainable Materials, Düsseldorf, Germany"
+repository-code: "https://github.com/biterik/openbis-mcp-server"
+url: "https://github.com/biterik/openbis-mcp-server"
+license: BSD-3-Clause
+version: 0.1.0
+date-released: 2026-11-18
+keywords:
+  - openBIS
+  - pyBIS
+  - Model Context Protocol
+  - MCP
+  - LLM agents
+  - research data management
+  - FAIR data
+  - materials science

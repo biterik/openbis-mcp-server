@@ -375,7 +375,19 @@ openbis-mcp-server/
 - [ ] Bulk operations (multi-sample / multi-dataset create in one call)
 - [ ] Search predicates richer than equality (`>=`, `contains`, date ranges)
 
+## Citation
+
+If you use this software, please cite it via the metadata in
+[`CITATION.cff`](CITATION.cff) (GitHub: "Cite this repository").
+
+## Funding
+
+Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation)
+under the National Research Data Infrastructure – NFDI 38/1 – project number
+460247524 (NFDI-MatWerk consortium), and through Project No. A02 of the
+SFB 1394 "Structural and Chemical Atomic Complexity – From Defect Phase Diagrams
+to Material Properties", Project ID 409476157.
+
 ## License
 
-Currently unlicensed (all rights reserved by default). A permissive license
-will be added before any external contributions are accepted.
+BSD 3-Clause License — see [`LICENSE`](LICENSE).

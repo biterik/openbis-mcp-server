@@ -4,12 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "openbis-mcp-server"
-version = "0.0.1"
+version = "0.1.0"
 description = "Model Context Protocol server exposing openBIS (via pyBIS) to LLM agents."
 readme = "README.md"
+license = "BSD-3-Clause"
 requires-python = ">=3.10"
 authors = [
-    { name = "Erik Bitzek", email = "erik.bitzek@googlemail.com" },
+    { name = "Erik Bitzek", email = "e.bitzek@mpi-susmat.de" },
 ]
 keywords = ["openbis", "pybis", "mcp", "model-context-protocol", "llm", "research-data-management"]
 classifiers = [
