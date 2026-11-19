@@ -1,78 +1,78 @@
 {
   "activity": {
-    "commits_30d": 0,
-    "contributors_total": 3,
+    "commits_30d": 2,
+    "contributors_total": 4,
     "issues_closed_30d": 0,
     "issues_opened_30d": 0,
     "prs_merged_30d": 0,
     "prs_opened_30d": 0
   },
-  "collected_at": "2026-11-18T11:36:38Z",
-  "date": "2026-11-18",
+  "collected_at": "2026-11-19T11:34:45Z",
+  "date": "2026-11-19",
   "derived": {
-    "clones_last_30d": 170,
-    "clones_last_7d": 49,
+    "clones_last_30d": 186,
+    "clones_last_7d": 45,
     "downloads_gained_30d": 0,
     "downloads_total": 0,
     "funnel_30d": {
       "downloads_gained": 0,
       "stars_gained": 0,
-      "unique_cloners": 121,
-      "unique_visitors": 27
+      "unique_cloners": 131,
+      "unique_visitors": 29
     },
-    "history_days": 151,
+    "history_days": 152,
     "per_30d": {
-      "clones": 128.0,
+      "clones": 130.7,
       "downloads_gained": 0.0,
       "stars_gained": 0.6,
-      "unique_cloners": 93.6,
-      "unique_visitors": 20.8,
-      "views": 27.8
+      "unique_cloners": 95.4,
+      "unique_visitors": 21.1,
+      "views": 29.2
     },
     "repo_created_at": "2026-05-05T12:19:10Z",
     "star_forecast": {
-      "eta_exponential": "2027-05-01",
-      "eta_linear": "2028-01-20",
+      "eta_exponential": "2027-05-02",
+      "eta_linear": "2028-01-23",
       "next_milestone": 10,
-      "stars_per_day": 0.0163
+      "stars_per_day": 0.0162
     },
     "stars_gained_30d": 0,
     "stars_gained_7d": 0,
     "stars_now": 3,
     "totals": {
-      "clones": 640,
+      "clones": 658,
       "downloads_gained": 0,
       "stars_gained": 3,
-      "unique_cloners": 468,
-      "unique_visitors": 104,
-      "views": 139
+      "unique_cloners": 480,
+      "unique_visitors": 106,
+      "views": 147
     },
-    "tracking_days": 150,
+    "tracking_days": 151,
     "tracking_since": "2026-06-22",
-    "views_last_30d": 29,
-    "views_last_7d": 2,
+    "views_last_30d": 37,
+    "views_last_7d": 8,
     "views_prev_7d": 8,
     "windows": {
       "30d": {
-        "clones": 170,
+        "clones": 186,
         "downloads_gained": 0,
         "stars_gained": 0,
-        "unique_visitors": 27,
-        "views": 29
+        "unique_visitors": 29,
+        "views": 37
       },
       "365d": {
-        "clones": 640,
+        "clones": 658,
         "downloads_gained": 0,
         "stars_gained": 3,
-        "unique_visitors": 104,
-        "views": 139
+        "unique_visitors": 106,
+        "views": 147
       },
       "90d": {
-        "clones": 510,
+        "clones": 516,
         "downloads_gained": 0,
         "stars_gained": 1,
-        "unique_visitors": 75,
-        "views": 104
+        "unique_visitors": 77,
+        "views": 112
       }
     }
   },
@@ -83,8 +83,8 @@
     "default_branch": "main",
     "fork": false,
     "open_issues": 2,
-    "pushed_at": "2026-11-17T11:47:39Z",
-    "size_kb": 264
+    "pushed_at": "2026-11-18T15:35:20Z",
+    "size_kb": 270
   },
   "popularity": {
     "forks": 1,
@@ -93,6 +93,13 @@
     "watchers": 3
   },
   "releases": [
+    {
+      "assets": [],
+      "name": "v0.1.0",
+      "prerelease": false,
+      "published_at": "2026-11-18T15:31:37Z",
+      "tag": "v0.1.0"
+    },
     {
       "assets": [],
       "name": "v0.0.1",
@@ -105,10 +112,6 @@
   "schema_version": 1,
   "traffic": {
     "clones": {
-      "2026-11-04": {
-        "count": 2,
-        "uniques": 2
-      },
       "2026-11-05": {
         "count": 4,
         "uniques": 4
@@ -160,32 +163,57 @@
       "2026-11-17": {
         "count": 2,
         "uniques": 2
+      },
+      "2026-11-18": {
+        "count": 18,
+        "uniques": 12
       }
     },
     "paths": [
       {
-        "count": 13,
+        "count": 12,
         "path": "/biterik/openbis-mcp-server",
-        "uniques": 9
+        "uniques": 10
+      },
+      {
+        "count": 2,
+        "path": "/biterik/openbis-mcp-server/releases",
+        "uniques": 1
+      },
+      {
+        "count": 2,
+        "path": "/biterik/openbis-mcp-server/releases/tag/v0.1.0",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/releases/edit/v0.1.0",
+        "uniques": 1
+      },
+      {
+        "count": 1,
+        "path": "/biterik/openbis-mcp-server/releases/new",
+        "uniques": 1
       }
     ],
     "referrers": [
       {
-        "count": 7,
+        "count": 5,
         "referrer": "teams.public.onecdn.static.microsoft",
-        "uniques": 5
+        "uniques": 4
+      },
+      {
+        "count": 3,
+        "referrer": "github.com",
+        "uniques": 2
       },
       {
         "count": 1,
-        "referrer": "github.com",
+        "referrer": "DuckDuckGo",
         "uniques": 1
       }
     ],
     "views": {
-      "2026-11-04": {
-        "count": 3,
-        "uniques": 3
-      },
       "2026-11-05": {
         "count": 2,
         "uniques": 2
@@ -237,6 +265,10 @@
       "2026-11-17": {
         "count": 0,
         "uniques": 0
+      },
+      "2026-11-18": {
+        "count": 8,
+        "uniques": 2
       }
     }
   }
