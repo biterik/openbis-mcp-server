@@ -1,21 +1,21 @@
 # biterik/openbis-mcp-server — repo vitals
 
 ![stars](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbiterik%2Fopenbis-mcp-server%2Fvitals%2Fbadge%2Fstars.json) ![views/week](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbiterik%2Fopenbis-mcp-server%2Fvitals%2Fbadge%2Fviews-week.json) 
-_Updated 2026-11-19T11:34:45Z (UTC) · machine-readable: [VITALS.json](VITALS.json) · full history: [history.ndjson](history.ndjson) · daily snapshots: [snapshots/](snapshots/)_
+_Updated 2026-11-20T11:33:00Z (UTC) · machine-readable: [VITALS.json](VITALS.json) · full history: [history.ndjson](history.ndjson) · daily snapshots: [snapshots/](snapshots/)_
 
 | | |
 |---|---|
 | Repository created | 2026-05-05 |
-| Tracked by repo-vitals since | 2026-06-22 (151 days)³ |
+| Tracked by repo-vitals since | 2026-06-22 (152 days)³ |
 
 
 ## Summary
 
 | Metric | 30 d | 90 d | 365 d |
 |---|---:|---:|---:|
-| Views | 37 | 112 | 147 |
-| Unique visitors¹ | 29 | 77 | 106 |
-| Clones | 186 | 516 | 658 |
+| Views | 39 | 114 | 149 |
+| Unique visitors¹ | 30 | 78 | 107 |
+| Clones | 200 | 523 | 673 |
 | Stars gained | 0 | 1 | 3 |
 | Release downloads gained | 0 | 0 | 0 |
 
@@ -23,14 +23,14 @@ _Updated 2026-11-19T11:34:45Z (UTC) · machine-readable: [VITALS.json](VITALS.js
 
 ## Since tracking began
 
-Everything recorded so far, from 2026-06-22 (151 days) — the total, and the same total expressed as an average rate.
+Everything recorded so far, from 2026-06-22 (152 days) — the total, and the same total expressed as an average rate.
 
 | Metric | Total | Average / 30 d |
 |---|---:|---:|
-| Views | 147 | 29.2 |
-| Unique visitors¹ | 106 | 21.1 |
-| Clones | 658 | 130.7 |
-| Unique cloners¹ | 480 | 95.4 |
+| Views | 149 | 29.4 |
+| Unique visitors¹ | 107 | 21.1 |
+| Clones | 673 | 132.8 |
+| Unique cloners¹ | 488 | 96.3 |
 | Stars gained | 3 | 0.6 |
 | Release downloads gained | 0 | 0.0 |
 
@@ -39,29 +39,30 @@ Averages are the total divided by days tracked, times 30 — not a projection.
 ## Trends — last 30 days
 
 ```
-views  ▁▁▁▁▁▁▂▃▇▄▁▁▂▃▄▃▂▁▁▄▂▂▃▁▁▁▁▁█·  (37 total)
-clones ▁▃▄▁▁▄▄▁▂▂▂▁▂▁▁▂▂█▁▁▁▅▇▁▁▅▃▁▆·  (186 total)
+views  ▁▁▁▁▁▂▃▇▄▁▁▂▃▄▃▂▁▁▄▂▂▃▁▁▁▁▁█▃·  (39 total)
+clones ▃▄▁▁▄▄▁▂▂▂▁▂▁▁▂▂█▁▁▁▅▇▁▁▅▃▁▆▅·  (200 total)
 ```
 
 ('·' = day without data)
 
-Stars: **3** (+0 in 30 d, +0 in 7 d)Next milestone **10★**: ~2028-01-23 (linear, 0.0162★/day) · ~2027-05-02 (exponential) — naive 90-day extrapolation²
+Stars: **3** (+0 in 30 d, +0 in 7 d)Next milestone **10★**: ~2028-01-27 (linear, 0.0161★/day) · ~2027-05-04 (exponential) — naive 90-day extrapolation²
 
-**Conversion funnel (30 d):** 29 unique visitors → 131 unique cloners → 0 stars gained → 0 downloads gained
+**Conversion funnel (30 d):** 30 unique visitors → 138 unique cloners → 0 stars gained → 0 downloads gained
 
 ## Where visitors come from (14-day window)
 
 | Referrer | Views | Unique |
 |---|---:|---:|
-| teams.public.onecdn.static.microsoft | 5 | 4 |
 | github.com | 3 | 2 |
+| teams.public.onecdn.static.microsoft | 3 | 2 |
 | DuckDuckGo | 1 | 1 |
 
 | Popular path | Views | Unique |
 |---|---:|---:|
-| `/biterik/openbis-mcp-server` | 12 | 10 |
+| `/biterik/openbis-mcp-server` | 11 | 8 |
 | `/biterik/openbis-mcp-server/releases` | 2 | 1 |
 | `/biterik/openbis-mcp-server/releases/tag/v0.1.0` | 2 | 1 |
+| `/biterik/openbis-mcp-server/blob/main/LICENSE` | 1 | 1 |
 | `/biterik/openbis-mcp-server/releases/edit/v0.1.0` | 1 | 1 |
 | `/biterik/openbis-mcp-server/releases/new` | 1 | 1 |
 
@@ -96,7 +97,7 @@ Interactive dashboard: [index.html](index.html) on this branch (raw URLs don't
 render HTML — view it via GitHub Pages on the vitals branch, the repo-vitals
 hub, or locally: `git clone -b vitals … && python -m http.server`).
 A copy of this report named with the repo and today's date lives at
-[reports/biterik-openbis-mcp-server-2026-11-19.md](reports/biterik-openbis-mcp-server-2026-11-19.md)
+[reports/biterik-openbis-mcp-server-2026-11-20.md](reports/biterik-openbis-mcp-server-2026-11-20.md)
 — safe to download standalone.
 
 <sub>[repo-vitals](https://github.com/biterik/repo-vitals) by Erik Bitzek —
