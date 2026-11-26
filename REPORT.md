@@ -1,21 +1,21 @@
 # biterik/openbis-mcp-server — repo vitals
 
 ![stars](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbiterik%2Fopenbis-mcp-server%2Fvitals%2Fbadge%2Fstars.json) ![views/week](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbiterik%2Fopenbis-mcp-server%2Fvitals%2Fbadge%2Fviews-week.json) 
-_Updated 2026-11-25T12:48:08Z (UTC) · machine-readable: [VITALS.json](VITALS.json) · full history: [history.ndjson](history.ndjson) · daily snapshots: [snapshots/](snapshots/)_
+_Updated 2026-11-26T12:25:57Z (UTC) · machine-readable: [VITALS.json](VITALS.json) · full history: [history.ndjson](history.ndjson) · daily snapshots: [snapshots/](snapshots/)_
 
 | | |
 |---|---|
 | Repository created | 2026-05-05 |
-| Tracked by repo-vitals since | 2026-06-22 (157 days)³ |
+| Tracked by repo-vitals since | 2026-06-22 (158 days)³ |
 
 
 ## Summary
 
 | Metric | 30 d | 90 d | 365 d |
 |---|---:|---:|---:|
-| Views | 40 | 115 | 150 |
-| Unique visitors¹ | 31 | 79 | 108 |
-| Clones | 183 | 530 | 689 |
+| Views | 39 | 115 | 150 |
+| Unique visitors¹ | 30 | 79 | 108 |
+| Clones | 192 | 548 | 708 |
 | Stars gained | 0 | 1 | 3 |
 | Release downloads gained | 0 | 0 | 0 |
 
@@ -23,14 +23,14 @@ _Updated 2026-11-25T12:48:08Z (UTC) · machine-readable: [VITALS.json](VITALS.js
 
 ## Since tracking began
 
-Everything recorded so far, from 2026-06-22 (157 days) — the total, and the same total expressed as an average rate.
+Everything recorded so far, from 2026-06-22 (158 days) — the total, and the same total expressed as an average rate.
 
 | Metric | Total | Average / 30 d |
 |---|---:|---:|
-| Views | 150 | 28.7 |
-| Unique visitors¹ | 108 | 20.6 |
-| Clones | 689 | 131.7 |
-| Unique cloners¹ | 500 | 95.5 |
+| Views | 150 | 28.5 |
+| Unique visitors¹ | 108 | 20.5 |
+| Clones | 708 | 134.4 |
+| Unique cloners¹ | 512 | 97.2 |
 | Stars gained | 3 | 0.6 |
 | Release downloads gained | 0 | 0.0 |
 
@@ -39,15 +39,15 @@ Averages are the total divided by days tracked, times 30 — not a projection.
 ## Trends — last 30 days
 
 ```
-views  ▂▃▇▄▁▁▂▃▄▃▂▁▁▄▂▂▃▁▁▁▁▁█▃▁▁▁▂▁·  (40 total)
-clones ▄▁▂▂▂▁▂▁▁▂▂█▁▁▁▅▇▁▁▅▃▁▆▅▂▂▂▁▂·  (183 total)
+views  ▃▇▄▁▁▂▃▄▃▂▁▁▄▂▂▃▁▁▁▁▁█▃▁▁▁▂▁▁·  (39 total)
+clones ▁▂▂▂▁▂▁▁▂▂█▁▁▁▅▇▁▁▅▃▁▆▅▂▂▂▁▂▆·  (192 total)
 ```
 
 ('·' = day without data)
 
-Stars: **3** (+0 in 30 d, +0 in 7 d)Next milestone **10★**: ~2028-02-21 (linear, 0.0154★/day) · ~2027-05-15 (exponential) — naive 90-day extrapolation²
+Stars: **3** (+0 in 30 d, +0 in 7 d)Next milestone **10★**: ~2028-02-28 (linear, 0.0152★/day) · ~2027-05-18 (exponential) — naive 90-day extrapolation²
 
-**Conversion funnel (30 d):** 31 unique visitors → 130 unique cloners → 0 stars gained → 0 downloads gained
+**Conversion funnel (30 d):** 30 unique visitors → 136 unique cloners → 0 stars gained → 0 downloads gained
 
 ## Where visitors come from (14-day window)
 
@@ -58,7 +58,7 @@ Stars: **3** (+0 in 30 d, +0 in 7 d)Next milestone **10★**: ~2028-02-21 (linea
 
 | Popular path | Views | Unique |
 |---|---:|---:|
-| `/biterik/openbis-mcp-server` | 7 | 6 |
+| `/biterik/openbis-mcp-server` | 6 | 5 |
 | `/biterik/openbis-mcp-server/releases` | 2 | 1 |
 | `/biterik/openbis-mcp-server/releases/tag/v0.1.0` | 2 | 1 |
 | `/biterik/openbis-mcp-server/blob/main/LICENSE` | 1 | 1 |
@@ -96,7 +96,7 @@ Interactive dashboard: [index.html](index.html) on this branch (raw URLs don't
 render HTML — view it via GitHub Pages on the vitals branch, the repo-vitals
 hub, or locally: `git clone -b vitals … && python -m http.server`).
 A copy of this report named with the repo and today's date lives at
-[reports/biterik-openbis-mcp-server-2026-11-25.md](reports/biterik-openbis-mcp-server-2026-11-25.md)
+[reports/biterik-openbis-mcp-server-2026-11-26.md](reports/biterik-openbis-mcp-server-2026-11-26.md)
 — safe to download standalone.
 
 <sub>[repo-vitals](https://github.com/biterik/repo-vitals) by Erik Bitzek —
